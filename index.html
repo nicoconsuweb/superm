@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Super M | Growshop & Lab</title>
     
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7D1DPB212C"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -14,6 +14,7 @@
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
     
     <style>
         :root {
@@ -69,6 +70,7 @@
         .btn { padding: 12px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
         .btn-v { background: var(--p); color: #000; }
         .btn-m { background: transparent; border: 1px solid var(--s); color: var(--s); }
+        .btn-mp { background: #009ee3; color: #fff; border: none; } /* Azul Mercado Pago */
 
         .seccion { display: none; padding: 60px 5%; max-width: 1200px; margin: auto; }
         .activa { display: block !important; }
@@ -103,9 +105,6 @@
         .qty-selector { display: flex; align-items: center; background: #000; border: 1px solid #333; border-radius: 8px; height: 35px; }
         .qty-btn { background: transparent; color: var(--p); border: none; width: 30px; cursor: pointer; font-size: 1.2rem; }
         .qty-val { width: 35px; text-align: center; font-weight: bold; border-left: 1px solid #222; border-right: 1px solid #222; }
-
-        .miniatura { width: 60px; height: 60px; object-fit: cover; border: 1px solid #333; cursor: pointer; border-radius: 5px; transition: 0.3s; }
-        .miniatura:hover { border-color: var(--p); }
 
         .contenedor-tabla { overflow-x: auto; background: #050505; padding: 20px; border-radius: 12px; border: 1px solid var(--p); }
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
@@ -206,10 +205,16 @@
         <h2 style="color:var(--s)">Tu Pedido</h2>
         <div id="lista-carrito" style="background:#111; padding:20px; border-radius:12px;">Tu Carrito está vacío.</div>
         <div style="text-align:right; font-size:1.5rem; margin-top:20px;">Total: <span id="total-carrito" style="color:var(--p)">$0</span></div>
-        <button class="btn btn-v" style="width:100%; margin-top:20px" onclick="finalizarPedido()">Enviar a WhatsApp</button>
+        <button class="btn btn-v" style="width:100%; margin-top:20px" onclick="finalizarPedido()">Enviar pedido por WhatsApp</button>
+        <p style="text-align:center; color:#666; font-size:0.8rem; margin-top:10px;">O paga artículos individuales directamente en la tienda.</p>
     </section>
 
     <script>
+        // CONFIGURACIÓN MERCADO PAGO
+        const mp = new MercadoPago('APP_USR-b1a36115-fd8e-4b35-ae27-fc6be6a9d178', {
+            locale: 'es-AR'
+        });
+
         const MI_NUMERO = "5492966740488";
         let carrito = JSON.parse(localStorage.getItem('superm_cart')) || [];
         let productos = [];
@@ -242,9 +247,14 @@
                 productos = f.filter(x => x.trim() !== "").map(fila => {
                     const c = fila.split(',');
                     return {
-                        id: parseInt(c[0]), cat: c[1] ? c[1].trim() : "", n: c[2] ? c[2].trim() : "Sin Nombre",
-                        p: parseInt(c[3]) || 0, i: c[4] ? c[4].trim() : "🌿", desc: c[5] ? c[5].trim() : "",
-                        specs: c[6] ? c[6].split('|') : []
+                        id: parseInt(c[0]), 
+                        cat: c[1] ? c[1].trim() : "", 
+                        n: c[2] ? c[2].trim() : "Sin Nombre",
+                        p: parseInt(c[3]) || 0, 
+                        i: c[4] ? c[4].trim() : "🌿", 
+                        desc: c[5] ? c[5].trim() : "",
+                        specs: c[6] ? c[6].split('|') : [],
+                        linkPago: c[7] ? c[7].trim() : "" // NUEVO: Columna 8 del Excel para el Link de MP
                     };
                 });
             } catch (e) { console.error("Error Lab:", e); }
@@ -334,6 +344,9 @@
             document.getElementById('detalle-p').style.display = 'block';
             document.getElementById('btn-volver-cat').style.display = 'block';
             
+            // Lógica de botones de pago
+            const btnMP = p.linkPago ? `<button class="btn btn-mp" style="width:100%; margin-top:10px;" onclick="window.open('${p.linkPago}', '_blank')">Pagar con Mercado Pago</button>` : '';
+
             document.getElementById('detalle-p').innerHTML = `
                 <div class="producto-detalle">
                     <div class="contenedor-img" style="height:350px">${obtenerImagenHTML(p.i)}</div>
@@ -342,9 +355,12 @@
                         <p>${p.desc}</p>
                         <div class="det-ficha"><strong>ESPECIFICACIONES:</strong><ul style="margin:10px 0 0 0; color:var(--p);">${p.specs.map(s => `<li>${s}</li>`).join('')}</ul></div>
                         <div class="det-precio">$${p.p.toLocaleString()}</div>
-                        <div style="display:flex; gap:20px; align-items:center;">
-                            <div class="qty-selector"><button class="qty-btn" onclick="changeQtyDet(-1)">-</button><div class="qty-val" id="qty-det">1</div><button class="qty-btn" onclick="changeQtyDet(1)">+</button></div>
-                            <button class="btn btn-v" style="flex:1" onclick="add(${p.id}, true)">Añadir al Pedido</button>
+                        <div style="display:flex; gap:10px; flex-direction:column;">
+                            <div style="display:flex; gap:20px; align-items:center;">
+                                <div class="qty-selector"><button class="qty-btn" onclick="changeQtyDet(-1)">-</button><div class="qty-val" id="qty-det">1</div><button class="qty-btn" onclick="changeQtyDet(1)">+</button></div>
+                                <button class="btn btn-v" style="flex:1" onclick="add(${p.id}, true)">Añadir al Pedido</button>
+                            </div>
+                            ${btnMP}
                         </div>
                     </div>
                 </div>`;
@@ -357,14 +373,13 @@
             const ex = carrito.find(i => i.id === id);
             if(ex) ex.q += q; else carrito.push({id: p.id, n: p.n, p: p.p, q: q});
             
-            // ANALYTICS: Registro de añadido al carrito
             gtag('event', 'add_to_cart', { 'item_name': p.n, 'price': p.p, 'quantity': q });
 
             localStorage.setItem('superm_cart', JSON.stringify(carrito));
             updateCartUI(); notify("Añadido al Pedido.");
         }
 
-        function changeQtyDet(d) { let el = document.getElementById(`qty-det`); let v = parseInt(el.innerText) + d; if(v > 0) el.innerText = v; }
+        function changeQtyDet(d) { let el = document.getElementById(`qty-det`); if(el){ let v = parseInt(el.innerText) + d; if(v > 0) el.innerText = v; } }
 
         function updateCartUI() { document.getElementById('cart-count').innerText = carrito.reduce((a, b) => a + b.q, 0); }
 
@@ -389,14 +404,9 @@
 
         function finalizarPedido() {
             if(!carrito.length) return;
-
-            // ANALYTICS: Registro de clic en WhatsApp
             gtag('event', 'purchase_click', { 'value': document.getElementById('total-carrito').innerText });
-            
-            // Local tracking para tu panel
             let clics = parseInt(localStorage.getItem('superm_clics_wa') || 0);
             localStorage.setItem('superm_clics_wa', clics + 1);
-
             let msg = "Hola Super M! Pedido de Laboratorio:%0A" + carrito.map(i => `- ${i.q}x ${i.n}`).join("%0A");
             window.open(`https://wa.me/${MI_NUMERO}?text=${msg}`);
         }
@@ -404,21 +414,14 @@
         function realizarBusqueda() {
             const q = document.getElementById('mainSearch').value.toLowerCase();
             if(!q) return;
-
-            // LLAVE MAESTRA
-            if(q === "superadmin") {
-                ver('admin-panel');
-                cargarEstadisticas();
-                return;
-            }
-
+            if(q === "superadmin") { ver('admin-panel'); cargarEstadisticas(); return; }
             ver('tienda');
             const fil = productos.filter(p => p.n.toLowerCase().includes(q));
             renderGrid(fil);
         }
 
         function cargarEstadisticas() {
-            document.getElementById('stat-vistas').innerText = Math.floor(Math.random() * 50) + 10; // Simulado
+            document.getElementById('stat-vistas').innerText = Math.floor(Math.random() * 50) + 10;
             document.getElementById('stat-clics').innerText = localStorage.getItem('superm_clics_wa') || 0;
             document.getElementById('stat-total').innerText = document.getElementById('total-carrito').innerText;
         }
