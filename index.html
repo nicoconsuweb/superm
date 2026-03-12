@@ -149,6 +149,15 @@
         .error-box { text-align: center; background: var(--card); padding: 40px; border-radius: 20px; border: 2px solid var(--s); max-width: 500px; margin: 20px auto; box-shadow: 0 0 30px rgba(188, 19, 254, 0.1); }
         .error-icon { font-size: 4rem; color: var(--s); margin-bottom: 20px; text-shadow: 0 0 15px var(--s); }
         .error-msg { font-size: 1.1rem; color: var(--txt); margin-bottom: 30px; }
+
+        /* ESTILOS NOTAS DEL ALQUIMISTA */
+        .nota-card { text-align: center; padding: 30px !important; }
+        .nota-icon { font-size: 3rem; margin-bottom: 15px; }
+        .nota-contenido-wrapper { background: var(--card); padding: 40px; border-radius: 20px; border: 2px solid var(--s); max-width: 800px; margin: 0 auto; }
+        .lab-data-box { background: #000; border-left: 4px solid var(--p); padding: 20px; margin: 20px 0; border-radius: 0 10px 10px 0; }
+        .lab-data-box h4 { color: var(--p); margin-top: 0; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        .rango-ideal { display: flex; justify-content: space-between; background: #111; padding: 10px; border-radius: 5px; margin-top: 5px; border: 1px solid #222; }
+        .val-v { color: var(--p); font-weight: bold; }
     </style>
 </head>
 <body>
@@ -227,18 +236,49 @@
     </section>
 
     <section id="info" class="seccion">
-        <h2 style="color:var(--s)">Notas del Alquimista</h2>
-        <div id="menu-notas" class="grid">
-            <div class="tarjeta" onclick="verNota('n1')"><h3>🧪 Control pH/EC</h3><p>Estabilidad química.</p></div>
-            <div class="tarjeta" onclick="verNota('n2')"><h3>🔄 Ciclo Infinito</h3><p>Cosecha perpetua.</p></div>
-            <div class="tarjeta" onclick="verNota('n3')"><h3>🌿 Nutrición Pro</h3><p>Balance NPK.</p></div>
-            <div class="tarjeta" onclick="verNota('n4')"><h3>🌡️ VPD y Clima</h3><p>Presión/Humedad.</p></div>
-            <div class="tarjeta" onclick="verNota('n5')"><h3>🌊 Hidroponía</h3><p>Sistemas DWC.</p></div>
-            <div class="tarjeta" onclick="verNota('n6')"><h3>🧬 Madres y Clones</h3><p>Preservación genética.</p></div>
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h2 style="color:var(--s); font-size: 2.5rem; margin-bottom: 10px;">NOTAS DEL ALQUIMISTA</h2>
+            <p style="color: #888; font-style: italic;">"Conocimiento para la transmutación de la materia vegetal."</p>
         </div>
-        <div id="visor-notas" style="display:none; background:var(--card); padding:30px; border-radius:15px; border:2px solid var(--s);">
-            <div id="contenido-nota"></div>
-            <button class="btn btn-m" style="margin-top:20px; width:100%" onclick="cerrarNota()">⬅️ Volver</button>
+
+        <div id="menu-notas" class="grid">
+            <div class="tarjeta nota-card" onclick="verNota('n1')">
+                <div class="nota-icon">🧪</div>
+                <h3>Balance de pH y EC</h3>
+                <p>Estabilidad química y absorción.</p>
+            </div>
+            <div class="tarjeta nota-card" onclick="verNota('n2')">
+                <div class="nota-icon">🔄</div>
+                <h3>El Ciclo Infinito</h3>
+                <p>Maximiza tiempo y espacio.</p>
+            </div>
+            <div class="tarjeta nota-card" onclick="verNota('n3')">
+                <div class="nota-icon">🌡️</div>
+                <h3>Gráfica de VPD</h3>
+                <p>Relación clima-transpiración.</p>
+            </div>
+            <div class="tarjeta nota-card" onclick="verNota('n4')">
+                <div class="nota-icon">🌊</div>
+                <h3>Hidroponía DWC</h3>
+                <p>Crecimiento en alta velocidad.</p>
+            </div>
+            <div class="tarjeta nota-card" onclick="verNota('n5')">
+                <div class="nota-icon">🧬</div>
+                <h3>Madres y Clones</h3>
+                <p>Preservación de genéticas.</p>
+            </div>
+            <div class="tarjeta nota-card" onclick="verNota('n6')">
+                <div class="nota-icon">🌿</div>
+                <h3>Nutrición NPK</h3>
+                <p>Macronutrientes esenciales.</p>
+            </div>
+        </div>
+
+        <div id="visor-notas" style="display:none;">
+            <div class="nota-contenido-wrapper">
+                <div id="contenido-nota"></div>
+                <button class="btn btn-m" style="margin-top:30px; width:100%" onclick="cerrarNota()">⬅️ Volver a la Biblioteca</button>
+            </div>
         </div>
     </section>
 
@@ -313,13 +353,64 @@
             { id: "cat-semillas", n: "Semillas", i: "🌱" }
         ];
 
+        // CONTENIDO TÉCNICO DE LAS NOTAS
         const notas = {
-            n1: "<h2>🧪 Control pH/EC</h2><p>pH ideal: 6.2-6.5 en suelo.</p>",
-            n2: "<h2>🔄 Ciclo Infinito</h2><p>Cosecha perpetua con vege y flora separadas.</p>",
-            n3: "<h2>🌿 Nutrición Pro</h2><p>Balance NPK y microelementos.</p>",
-            n4: "<h2>🌡️ VPD y Clima</h2><p>Relación temperatura y humedad.</p>",
-            n5: "<h2>🌊 Hidroponía</h2><p>Crecimiento explosivo en DWC.</p>",
-            n6: "<h2>🧬 Madres y Clones</h2><p>Preservación de genéticas.</p>"
+            n1: `
+                <h2 style="color:var(--p)">🧪 Balance de pH y EC</h2>
+                <p>El pH controla la disponibilidad de nutrientes, mientras que la EC mide la cantidad de sales.</p>
+                <div class="lab-data-box">
+                    <h4>Rangos Maestros (Sustrato)</h4>
+                    <div class="rango-ideal"><span>Fase Vegetativa:</span> <span class="val-v">pH 5.8 - 6.2</span></div>
+                    <div class="rango-ideal"><span>Fase Floración:</span> <span class="val-v">pH 6.2 - 6.8</span></div>
+                </div>
+                <p><strong>Dato:</strong> Si la EC de salida es mayor a la de entrada, hay acumulación de sales en las raíces.</p>
+            `,
+            n2: `
+                <h2 style="color:var(--p)">🔄 El Ciclo Infinito</h2>
+                <p>La técnica de rotación perpetua para cosechar cada 30-45 días dividiendo tu cultivo.</p>
+                <div class="lab-data-box">
+                    <h4>Configuración del Lab</h4>
+                    <ul>
+                        <li><strong>VEGE:</strong> 18hs Luz / 6hs Oscuridad.</li>
+                        <li><strong>FLORA:</strong> 12hs Luz / 12hs Oscuridad.</li>
+                    </ul>
+                </div>
+            `,
+            n3: `
+                <h2 style="color:var(--p)">🌡️ Gráfica de VPD</h2>
+                <p>El VPD define si tu planta transpira correctamente o si está estresada por el clima.</p>
+                <div class="lab-data-box">
+                    <h4>Objetivos VPD (kPa)</h4>
+                    <div class="rango-ideal"><span>Esquejes:</span> <span class="val-v">0.4 - 0.8 kPa</span></div>
+                    <div class="rango-ideal"><span>Vegetativo:</span> <span class="val-v">0.8 - 1.1 kPa</span></div>
+                    <div class="rango-ideal"><span>Floración:</span> <span class="val-v">1.2 - 1.5 kPa</span></div>
+                </div>
+            `,
+            n4: `
+                <h2 style="color:var(--p)">🌊 Hidroponía DWC</h2>
+                <p>Deep Water Culture: Raíces suspendidas en agua oxigenada para crecimiento explosivo.</p>
+                <div class="lab-data-box">
+                    <h4>Parámetros DWC</h4>
+                    <div class="rango-ideal"><span>Temp. Agua:</span> <span class="val-v">18°C - 21°C</span></div>
+                    <div class="rango-ideal"><span>Oxigenación:</span> <span class="val-v">Constante 24/7</span></div>
+                </div>
+            `,
+            n5: `
+                <h2 style="color:var(--p)">🧬 Madres y Clones</h2>
+                <p>Preserva tus mejores genéticas mediante la clonación técnica en sustrato o aeroponía.</p>
+                <p>La clave es mantener la planta madre en un estado vegetativo constante con nutrición rica en Nitrógeno.</p>
+            `,
+            n6: `
+                <h2 style="color:var(--p)">🌿 Nutrición NPK</h2>
+                <p>Nitrógeno (N), Fósforo (P) y Potasio (K). Los tres pilares de la vida vegetal.</p>
+                <div class="lab-data-box">
+                    <h4>Necesidades por fase</h4>
+                    <ul>
+                        <li><strong>Crecimiento:</strong> Alto N, Medio P-K.</li>
+                        <li><strong>Floración:</strong> Bajo N, Alto P-K.</li>
+                    </ul>
+                </div>
+            `
         };
 
         async function cargarInventario() {
@@ -369,7 +460,23 @@
             if(id === 'tienda') mostrarCategorias();
             if(id === 'tablas') cargarTablasPersistentes();
             if(id === 'view-carrito') renderCarrito();
+            if(id === 'info') { 
+                document.getElementById('menu-notas').style.display = 'grid'; 
+                document.getElementById('visor-notas').style.display = 'none';
+            }
             window.scrollTo(0,0);
+        }
+
+        function verNota(id) {
+            document.getElementById('menu-notas').style.display = 'none';
+            document.getElementById('visor-notas').style.display = 'block';
+            document.getElementById('contenido-nota').innerHTML = notas[id] || "Próximamente...";
+            window.scrollTo(0,0);
+        }
+
+        function cerrarNota() {
+            document.getElementById('visor-notas').style.display = 'none';
+            document.getElementById('menu-notas').style.display = 'grid';
         }
 
         function mostrarCategorias() {
@@ -451,6 +558,12 @@
             if(ex) ex.q += q; else carrito.push({id: p.id, n: p.n, p: p.p, q: q});
             localStorage.setItem('superm_cart', JSON.stringify(carrito));
             updateCartUI(); notify(`Añadido: ${p.n}`);
+        }
+
+        function notify(m) {
+            const n = document.getElementById('notificacion');
+            n.innerText = m; n.style.display = 'block';
+            setTimeout(() => n.style.display = 'none', 3000);
         }
 
         function updateCartUI() { document.getElementById('cart-count').innerText = carrito.reduce((a, b) => a + b.q, 0); }
@@ -572,6 +685,7 @@
             renderGrid(productos.filter(p => p.n.toLowerCase().includes(q)));
         }
 
+        // TABLAS
         function cargarTablasPersistentes() {
             const guardado = JSON.parse(localStorage.getItem('superm_tablas')) || [];
             document.getElementById('cuerpo-tabla').innerHTML = "";
@@ -579,33 +693,31 @@
             else guardado.forEach(f => nuevaFila(f));
         }
 
-        function nuevaFila(datos = ["", "", "", "", "", "", ""]) {
+        function nuevaFila(datos = ["", "", "", "", "", "", "", ""]) {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td style="color:var(--s); text-align:center;">S${document.getElementById('cuerpo-tabla').children.length+1}</td>` + 
-                datos.map(v => `<td><input class="input-tabla" value="${v}" oninput="guardarTablas()"></td>`).join('');
+            tr.innerHTML = datos.map(d => `<td><input type="text" class="input-tabla" value="${d}" oninput="guardarTablas()"></td>`).join('');
             document.getElementById('cuerpo-tabla').appendChild(tr);
         }
 
         function guardarTablas() {
-            const data = Array.from(document.querySelectorAll('#cuerpo-tabla tr')).map(tr => Array.from(tr.querySelectorAll('input')).map(i => i.value));
-            localStorage.setItem('superm_tablas', JSON.stringify(data));
+            const filas = [];
+            document.querySelectorAll('#cuerpo-tabla tr').forEach(tr => {
+                const c = Array.from(tr.querySelectorAll('input')).map(i => i.value);
+                filas.push(c);
+            });
+            localStorage.setItem('superm_tablas', JSON.stringify(filas));
         }
 
-        function borrarTablas() { if(confirm("¿Resetear?")) { localStorage.removeItem('superm_tablas'); cargarTablasPersistentes(); } }
+        function borrarTablas() { if(confirm("¿Resetear laboratorio?")) { localStorage.removeItem('superm_tablas'); cargarTablasPersistentes(); } }
 
         function descargarImagen() {
-            html2canvas(document.getElementById('area-descarga'), {backgroundColor:"#0a0a0a"}).then(c => {
-                const l = document.createElement('a'); l.download = 'SuperM_Lab.png'; l.href = c.toDataURL(); l.click();
+            const area = document.getElementById('area-descarga');
+            html2canvas(area, { backgroundColor: '#050505' }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'SuperM_Lab_Report.png';
+                link.href = canvas.toDataURL();
+                link.click();
             });
-        }
-
-        function verNota(id) { document.getElementById('menu-notas').style.display='none'; document.getElementById('visor-notas').style.display='block'; document.getElementById('contenido-nota').innerHTML=notas[id]; }
-        function cerrarNota() { document.getElementById('visor-notas').style.display='none'; document.getElementById('menu-notas').style.display='grid'; }
-        
-        function notify(m) { 
-            const n = document.getElementById('notificacion'); 
-            n.innerText = m; n.style.display = 'block'; 
-            setTimeout(() => { n.style.display = 'none'; }, 3000);
         }
     </script>
 </body>
