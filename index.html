@@ -70,7 +70,7 @@
         .btn { padding: 12px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
         .btn-v { background: var(--p); color: #000; }
         .btn-m { background: transparent; border: 1px solid var(--s); color: var(--s); }
-        .btn-mp { background: #009ee3; color: #fff; border: none; } /* Azul Mercado Pago */
+        .btn-mp { background: #009ee3; color: #fff; border: none; }
 
         .seccion { display: none; padding: 60px 5%; max-width: 1200px; margin: auto; }
         .activa { display: block !important; }
@@ -102,9 +102,13 @@
         .det-precio { font-size: 2rem; color: var(--s); font-weight: bold; margin: 20px 0; }
         .det-ficha { background: #000; padding: 20px; border-radius: 10px; border-left: 4px solid var(--p); margin: 20px 0; }
         
-        .qty-selector { display: flex; align-items: center; background: #000; border: 1px solid #333; border-radius: 8px; height: 35px; }
-        .qty-btn { background: transparent; color: var(--p); border: none; width: 30px; cursor: pointer; font-size: 1.2rem; }
-        .qty-val { width: 35px; text-align: center; font-weight: bold; border-left: 1px solid #222; border-right: 1px solid #222; }
+        /* Selector de Cantidad Mejorado */
+        .qty-selector { display: flex; align-items: center; background: #000; border: 1px solid #333; border-radius: 8px; height: 40px; overflow: hidden; width: fit-content; }
+        .qty-btn { background: transparent; color: var(--p); border: none; width: 35px; height: 100%; cursor: pointer; font-size: 1.2rem; transition: 0.2s; }
+        .qty-btn:hover { background: #111; }
+        .qty-input { width: 50px; height: 100%; background: transparent; color: #fff; border: none; border-left: 1px solid #222; border-right: 1px solid #222; text-align: center; font-weight: bold; font-family: inherit; font-size: 1rem; outline: none; }
+        /* Quitar flechas del input number */
+        .qty-input::-webkit-inner-spin-button, .qty-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
         .contenedor-tabla { overflow-x: auto; background: #050505; padding: 20px; border-radius: 12px; border: 1px solid var(--p); }
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
@@ -139,25 +143,6 @@
             <span onclick="ver('view-carrito')">🛒 <small id="cart-count">0</small></span>
         </div>
     </nav>
-
-    <section id="admin-panel" class="seccion">
-        <h2 style="color:var(--p)">📊 Panel de Alquimista (Privado)</h2>
-        <div class="grid">
-            <div class="tarjeta" style="border-color:var(--p)">
-                <h3>Vistas Hoy</h3>
-                <p id="stat-vistas" style="font-size:2rem; color:var(--p); margin:0">Cargando...</p>
-            </div>
-            <div class="tarjeta" style="border-color:var(--s)">
-                <h3>Clicks WhatsApp</h3>
-                <p id="stat-clics" style="font-size:2rem; color:var(--s); margin:0">0</p>
-            </div>
-            <div class="tarjeta">
-                <h3>Total Carrito</h3>
-                <p id="stat-total" style="font-size:2rem; margin:0">$0</p>
-            </div>
-        </div>
-        <button class="btn btn-m" style="margin-top:20px; width:100%" onclick="irAlInicio()">Cerrar Panel</button>
-    </section>
 
     <section id="tienda" class="seccion">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
@@ -204,16 +189,17 @@
     <section id="view-carrito" class="seccion">
         <h2 style="color:var(--s)">Tu Pedido</h2>
         <div id="lista-carrito" style="background:#111; padding:20px; border-radius:12px;">Tu Carrito está vacío.</div>
-        <div style="text-align:right; font-size:1.5rem; margin-top:20px;">Total: <span id="total-carrito" style="color:var(--p)">$0</span></div>
+        <div style="text-align:right; font-size:1.5rem; margin-top:20px;">
+            <div style="font-size:0.9rem; color:#888;">Envío: <span style="color:var(--s)">A convenir vía WhatsApp</span></div>
+            Total: <span id="total-carrito" style="color:var(--p)">$0</span>
+        </div>
         <button class="btn btn-v" style="width:100%; margin-top:20px" onclick="finalizarPedido()">Enviar pedido por WhatsApp</button>
         <p style="text-align:center; color:#666; font-size:0.8rem; margin-top:10px;">O paga artículos individuales directamente en la tienda.</p>
     </section>
 
     <script>
         // CONFIGURACIÓN MERCADO PAGO
-        const mp = new MercadoPago('APP_USR-b1a36115-fd8e-4b35-ae27-fc6be6a9d178', {
-            locale: 'es-AR'
-        });
+        const mp = new MercadoPago('APP_USR-b1a36115-fd8e-4b35-ae27-fc6be6a9d178', { locale: 'es-AR' });
 
         const MI_NUMERO = "5492966740488";
         let carrito = JSON.parse(localStorage.getItem('superm_cart')) || [];
@@ -254,7 +240,7 @@
                         i: c[4] ? c[4].trim() : "🌿", 
                         desc: c[5] ? c[5].trim() : "",
                         specs: c[6] ? c[6].split('|') : [],
-                        linkPago: c[7] ? c[7].trim() : "" // NUEVO: Columna 8 del Excel para el Link de MP
+                        linkPago: c[7] ? c[7].trim() : ""
                     };
                 });
             } catch (e) { console.error("Error Lab:", e); }
@@ -273,7 +259,9 @@
         };
 
         function irAlInicio() {
-            localStorage.removeItem('superm_seccion'); localStorage.removeItem('superm_prod_id'); localStorage.removeItem('superm_cat_id');
+            localStorage.removeItem('superm_seccion'); 
+            localStorage.removeItem('superm_prod_id'); 
+            localStorage.removeItem('superm_cat_id');
             location.reload();
         }
 
@@ -344,7 +332,6 @@
             document.getElementById('detalle-p').style.display = 'block';
             document.getElementById('btn-volver-cat').style.display = 'block';
             
-            // Lógica de botones de pago
             const btnMP = p.linkPago ? `<button class="btn btn-mp" style="width:100%; margin-top:10px;" onclick="window.open('${p.linkPago}', '_blank')">Pagar con Mercado Pago</button>` : '';
 
             document.getElementById('detalle-p').innerHTML = `
@@ -357,8 +344,12 @@
                         <div class="det-precio">$${p.p.toLocaleString()}</div>
                         <div style="display:flex; gap:10px; flex-direction:column;">
                             <div style="display:flex; gap:20px; align-items:center;">
-                                <div class="qty-selector"><button class="qty-btn" onclick="changeQtyDet(-1)">-</button><div class="qty-val" id="qty-det">1</div><button class="qty-btn" onclick="changeQtyDet(1)">+</button></div>
-                                <button class="btn btn-v" style="flex:1" onclick="add(${p.id}, true)">Añadir al Pedido</button>
+                                <div class="qty-selector">
+                                    <button class="qty-btn" onclick="changeQtyDet(-1)">-</button>
+                                    <input type="number" class="qty-input" id="qty-det" value="1" min="1">
+                                    <button class="qty-btn" onclick="changeQtyDet(1)">+</button>
+                                </div>
+                                <button class="btn btn-v" style="flex:1" onclick="add(${p.id})">Añadir al Pedido</button>
                             </div>
                             ${btnMP}
                         </div>
@@ -367,21 +358,29 @@
             window.scrollTo(0,0);
         }
 
-        function add(id, isDet = false) {
+        function changeQtyDet(d) { 
+            const input = document.getElementById('qty-det');
+            let v = parseInt(input.value) + d;
+            if(v > 0) input.value = v;
+        }
+
+        function add(id) {
             const p = productos.find(x => x.id === id);
-            const q = isDet ? parseInt(document.getElementById('qty-det').innerText) : 1;
+            const inputQty = document.getElementById('qty-det');
+            const q = parseInt(inputQty.value) || 1;
+            
             const ex = carrito.find(i => i.id === id);
             if(ex) ex.q += q; else carrito.push({id: p.id, n: p.n, p: p.p, q: q});
             
             gtag('event', 'add_to_cart', { 'item_name': p.n, 'price': p.p, 'quantity': q });
-
             localStorage.setItem('superm_cart', JSON.stringify(carrito));
-            updateCartUI(); notify("Añadido al Pedido.");
+            updateCartUI(); 
+            notify(`Añadido: ${q}x ${p.n}`);
         }
 
-        function changeQtyDet(d) { let el = document.getElementById(`qty-det`); if(el){ let v = parseInt(el.innerText) + d; if(v > 0) el.innerText = v; } }
-
-        function updateCartUI() { document.getElementById('cart-count').innerText = carrito.reduce((a, b) => a + b.q, 0); }
+        function updateCartUI() { 
+            document.getElementById('cart-count').innerText = carrito.reduce((a, b) => a + b.q, 0); 
+        }
 
         function renderCarrito() {
             const lista = document.getElementById('lista-carrito');
@@ -405,25 +404,16 @@
         function finalizarPedido() {
             if(!carrito.length) return;
             gtag('event', 'purchase_click', { 'value': document.getElementById('total-carrito').innerText });
-            let clics = parseInt(localStorage.getItem('superm_clics_wa') || 0);
-            localStorage.setItem('superm_clics_wa', clics + 1);
-            let msg = "Hola Super M! Pedido de Laboratorio:%0A" + carrito.map(i => `- ${i.q}x ${i.n}`).join("%0A");
+            let msg = "Hola Super M! Pedido de Laboratorio:%0A" + carrito.map(i => `- ${i.q}x ${i.n}`).join("%0A") + "%0A%0A*Envío a convenir*";
             window.open(`https://wa.me/${MI_NUMERO}?text=${msg}`);
         }
 
         function realizarBusqueda() {
             const q = document.getElementById('mainSearch').value.toLowerCase();
             if(!q) return;
-            if(q === "superadmin") { ver('admin-panel'); cargarEstadisticas(); return; }
             ver('tienda');
             const fil = productos.filter(p => p.n.toLowerCase().includes(q));
             renderGrid(fil);
-        }
-
-        function cargarEstadisticas() {
-            document.getElementById('stat-vistas').innerText = Math.floor(Math.random() * 50) + 10;
-            document.getElementById('stat-clics').innerText = localStorage.getItem('superm_clics_wa') || 0;
-            document.getElementById('stat-total').innerText = document.getElementById('total-carrito').innerText;
         }
 
         function cargarTablasPersistentes() {
