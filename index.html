@@ -56,6 +56,7 @@
         .form-box {
             background: var(--card); border: 2px solid var(--s); padding: 30px; border-radius: 15px;
             width: 90%; max-width: 450px; box-shadow: 0 0 30px rgba(188, 19, 254, 0.2);
+            overflow-y: auto; max-height: 90vh; /* Para asegurar que se vea en móviles */
         }
         .form-box h3 { color: var(--p); text-align: center; margin-top: 0; letter-spacing: 2px; }
         .form-box input {
@@ -158,9 +159,11 @@
     <div id="modal-envio">
         <div class="form-box">
             <h3>DATOS DE ENVÍO</h3>
-            <input type="text" id="f-nombre" placeholder="Nombre y Apellido">
+            <input type="text" id="f-nombre" placeholder="Nombre y Apellido completo">
             <input type="text" id="f-dni" placeholder="DNI">
-            <input type="text" id="f-direccion" placeholder="Dirección (Calle y Número)">
+            <input type="tel" id="f-telefono" placeholder="Teléfono de Contacto (Ej: 2966123456)">
+            <input type="email" id="f-email" placeholder="Email (para envío del tracking)">
+            <input type="text" id="f-direccion" placeholder="Dirección Exacta (Calle y Número)">
             <input type="text" id="f-localidad" placeholder="Localidad / Provincia">
             <input type="text" id="f-cp" placeholder="Código Postal">
             <div style="font-size: 0.7rem; color: var(--s); margin: 10px 0; text-align: center; border: 1px dashed var(--s); padding: 5px;">
@@ -276,6 +279,7 @@
             <button class="btn btn-v" onclick="ver('info')">revisar Notas</button>
             <button class="btn btn-m" onclick="irAlInicio()">Volver al Inicio</button>
         </div>
+        <p style="margin-top: 50px; color: #555; font-size: 0.8rem;">Super M Growshop - Control & Genética</p>
     </section>
 
     <footer id="main-footer">
@@ -475,7 +479,7 @@
 
         function quitar(idx) { carrito.splice(idx,1); localStorage.setItem('superm_cart', JSON.stringify(carrito)); renderCarrito(); updateCartUI(); }
 
-        /* --- LOGICA MODAL Y FORMULARIO --- */
+        /* --- LOGICA MODAL Y FORMULARIO ACTUALIZADA CON TEL Y EMAIL --- */
         function abrirModalEnvio(contexto) {
             contextoEnvio = contexto;
             document.getElementById('modal-envio').style.display = 'flex';
@@ -487,14 +491,18 @@
 
         document.getElementById('btn-confirmar-envio').onclick = function() {
             const n = document.getElementById('f-nombre').value;
+            const dni = document.getElementById('f-dni').value;
+            const t = document.getElementById('f-telefono').value; // Nuevo
+            const e = document.getElementById('f-email').value; // Nuevo
             const d = document.getElementById('f-direccion').value;
             const l = document.getElementById('f-localidad').value;
-            const dni = document.getElementById('f-dni').value;
             const cp = document.getElementById('f-cp').value;
 
-            if(!n || !d || !l) return alert("Por favor completa los datos básicos para el despacho.");
+            // Validación básica: Nombre, Tel y Dirección son clave
+            if(!n || !t || !d || !l) return alert("Por favor completa los datos básicos: Nombre, Teléfono, Dirección y Localidad.");
 
-            let datosTxt = `%0A%0A*DATOS DE DESPACHO:*%0A- Nombre: ${n}%0A- DNI: ${dni}%0A- Dirección: ${d}%0A- Localidad: ${l}%0A- CP: ${cp}`;
+            // Estructura de los datos para WhatsApp
+            let datosTxt = `%0A%0A*DATOS DE DESPACHO:*%0A- Nombre: ${n}%0A- DNI: ${dni}%0A- Teléfono: ${t}%0A- Email: ${e}%0A- Dirección: ${d}%0A- Localidad: ${l}%0A- CP: ${cp}`;
 
             if(contextoEnvio === 'carrito') {
                 let msg = "Hola Super M! Pedido:%0A" + carrito.map(i => `- ${i.q}x ${i.n}`).join("%0A") + datosTxt;
@@ -507,6 +515,8 @@
                 setTimeout(() => { window.open(contextoEnvio, '_blank'); }, 1000);
             }
             cerrarModalEnvio();
+            // Limpiar formulario
+            document.querySelectorAll('#modal-envio input').forEach(input => input.value = '');
         };
 
         function realizarBusqueda() {
