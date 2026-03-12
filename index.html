@@ -273,8 +273,9 @@
     <script>
         const mp = new MercadoPago('APP_USR-b1a36115-fd8e-4b35-ae27-fc6be6a9d178', { locale: 'es-AR' });
         const MI_NUMERO = "5492966740488";
-        // TU URL DE GOOGLE SHEETS
-        const URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbzDtXJGmOa8SuAqYtQu9BwSR1ZsiNoz7bDOtBA71ecW123W9cxwFAHHlws61ikENRQ/exec";
+        
+        // URL DE IMPLEMENTACIÓN ACTUALIZADA
+        const URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbze4x6TEPBeNJKeQ-xmlqbfilmLd6B62gLPD1aYqp6DsZiGFkX8L6hMIS5RyKiXOWlO/exec";
         
         let carrito = JSON.parse(localStorage.getItem('superm_cart')) || [];
         let productos = [];
@@ -466,7 +467,6 @@
 
         function cerrarModalEnvio() { document.getElementById('modal-envio').style.display = 'none'; }
 
-        // --- FUNCIÓN MAGICA: ENVÍA A GOOGLE SHEETS ---
         async function enviarAGoogleSheets(datos) {
             try {
                 await fetch(URL_GOOGLE_SHEETS, {
@@ -476,7 +476,6 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datos)
                 });
-                console.log("Datos enviados a Sheets con éxito.");
             } catch (e) { console.error("Error enviando a Sheets:", e); }
         }
 
@@ -497,39 +496,56 @@
 
             let pedidoTexto = "";
             let totalPedido = 0;
+            let origenVenta = ""; 
 
+            // DETERMINAR ORIGEN DE VENTA
             if(contextoEnvio === 'carrito') {
+                origenVenta = "Carrito";
                 pedidoTexto = carrito.map(i => `${i.q}x ${i.n}`).join(", ");
                 totalPedido = carrito.reduce((a, b) => a + (b.p * b.q), 0);
             } else {
-                pedidoTexto = "Compra Directa / Link MP";
-                totalPedido = "Ver Link";
+                origenVenta = "Compra Directa";
+                const prodAsociado = productos.find(p => p.linkPago === contextoEnvio);
+                if (prodAsociado) {
+                    pedidoTexto = prodAsociado.n;
+                    totalPedido = prodAsociado.p;
+                } else {
+                    pedidoTexto = "Link MP Directo";
+                    totalPedido = "Link";
+                }
             }
 
+            // OBJETO FINAL PARA SHEETS (ORIGEN EN COLUMNA K)
             const objetoParaSheets = {
-                nombre: n, dni: dni, telefono: t, email: e,
-                direccion: d, localidad: l, cp: cp,
-                pedido: pedidoTexto, total: totalPedido
+                nombre: n, 
+                dni: dni, 
+                telefono: t, 
+                email: e,
+                direccion: d, 
+                localidad: l, 
+                cp: cp,
+                pedido: pedidoTexto, 
+                total: totalPedido, // Columna J
+                origen: origenVenta // Columna K
             };
 
-            // 1. Enviamos a la planilla
             await enviarAGoogleSheets(objetoParaSheets);
 
-            // 2. Preparamos WhatsApp
-            let msgWA = `Hola Super M! Pedido: ${pedidoTexto}. Datos: ${n}, DNI ${dni}, Tel ${t}, Dir: ${d}, ${l}.`;
-            window.open(`https://wa.me/${MI_NUMERO}?text=${encodeURIComponent(msgWA)}`);
+            let msgWA = `Hola Super M! Nuevo Pedido (${origenVenta}): ${pedidoTexto}. \n\nDatos de entrega:\n- Nombre: ${n}\n- DNI: ${dni}\n- Tel: ${t}\n- Dir: ${d}, ${l} (CP: ${cp}).`;
+            window.open(`https://wa.me/${MI_NUMERO}?text=${encodeURIComponent(msgWA)}`, '_blank');
 
-            // 3. Si era link de pago, lo abrimos después
-            if(contextoEnvio !== 'carrito') {
-                setTimeout(() => { window.open(contextoEnvio, '_blank'); }, 1000);
+            if(contextoEnvio !== 'carrito' && contextoEnvio.includes('mercadopago')) {
+                setTimeout(() => { window.location.href = contextoEnvio; }, 1200);
             }
 
-            // Limpieza
             cerrarModalEnvio();
             btn.disabled = false;
             btn.innerText = "Confirmar";
+            
             if(contextoEnvio === 'carrito') {
                 carrito = []; localStorage.removeItem('superm_cart'); updateCartUI(); ver('view-gracias');
+            } else if (!contextoEnvio.includes('mercadopago')) {
+                ver('view-gracias');
             }
         };
 
@@ -568,7 +584,12 @@
 
         function verNota(id) { document.getElementById('menu-notas').style.display='none'; document.getElementById('visor-notas').style.display='block'; document.getElementById('contenido-nota').innerHTML=notas[id]; }
         function cerrarNota() { document.getElementById('visor-notas').style.display='none'; document.getElementById('menu-notas').style.display='grid'; }
-        function notify(m) { const n = document.getElementById('notificacion'); n.innerText = m; n.style.display = 'block'; setTimeout(() => n.style.display = 'none', 2000); }
+        
+        function notify(m) { 
+            const n = document.getElementById('notificacion'); 
+            n.innerText = m; n.style.display = 'block'; 
+            setTimeout(() => { n.style.display = 'none'; }, 3000); 
+        }
     </script>
 </body>
 </html>
