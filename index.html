@@ -47,6 +47,23 @@
             font-weight: bold; box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
         }
 
+        /* --- MODAL FORMULARIO --- */
+        #modal-envio {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 9999;
+            backdrop-filter: blur(8px);
+        }
+        .form-box {
+            background: var(--card); border: 2px solid var(--s); padding: 30px; border-radius: 15px;
+            width: 90%; max-width: 450px; box-shadow: 0 0 30px rgba(188, 19, 254, 0.2);
+        }
+        .form-box h3 { color: var(--p); text-align: center; margin-top: 0; letter-spacing: 2px; }
+        .form-box input {
+            width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333;
+            color: #fff; border-radius: 5px; box-sizing: border-box; outline: none;
+        }
+        .form-box input:focus { border-color: var(--p); }
+
         nav {
             display: none; background: rgba(0,0,0,0.95); padding: 15px 5%; justify-content: space-between;
             align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222; backdrop-filter: blur(10px);
@@ -138,6 +155,24 @@
 
     <div id="notificacion"></div>
 
+    <div id="modal-envio">
+        <div class="form-box">
+            <h3>DATOS DE ENVÍO</h3>
+            <input type="text" id="f-nombre" placeholder="Nombre y Apellido">
+            <input type="text" id="f-dni" placeholder="DNI">
+            <input type="text" id="f-direccion" placeholder="Dirección (Calle y Número)">
+            <input type="text" id="f-localidad" placeholder="Localidad / Provincia">
+            <input type="text" id="f-cp" placeholder="Código Postal">
+            <div style="font-size: 0.7rem; color: var(--s); margin: 10px 0; text-align: center; border: 1px dashed var(--s); padding: 5px;">
+                📦 EMBALAJE DISCRETO GARANTIZADO
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn btn-m" style="flex: 1;" onclick="cerrarModalEnvio()">Cancelar</button>
+                <button class="btn btn-v" style="flex: 2;" id="btn-confirmar-envio">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
     <section id="landing">
         <div class="logo-frame"><h1 class="logo-txt">SUPER M</h1></div>
         <p style="color: #888; margin-bottom: 30px;">Growshop & Laboratorio de Cultivo Técnico</p>
@@ -219,7 +254,7 @@
             <span style="font-size: 1rem; color: #888;">Total: </span>
             <span id="total-carrito" style="color:var(--p); font-weight: 900;">$0</span>
         </div>
-        <button class="btn btn-v" style="width:100%; margin-top:20px" onclick="finalizarPedido()">Enviar pedido por WhatsApp</button>
+        <button class="btn btn-v" style="width:100%; margin-top:20px" onclick="abrirModalEnvio('carrito')">Confirmar y Enviar Pedido</button>
     </section>
 
     <section id="view-gracias" class="seccion" style="text-align: center;">
@@ -241,7 +276,6 @@
             <button class="btn btn-v" onclick="ver('info')">revisar Notas</button>
             <button class="btn btn-m" onclick="irAlInicio()">Volver al Inicio</button>
         </div>
-        <p style="margin-top: 50px; color: #555; font-size: 0.8rem;">Super M Growshop - Control & Genética</p>
     </section>
 
     <footer id="main-footer">
@@ -258,6 +292,7 @@
         const MI_NUMERO = "5492966740488";
         let carrito = JSON.parse(localStorage.getItem('superm_cart')) || [];
         let productos = [];
+        let contextoEnvio = null; // 'carrito' o el link de pago directo
         
         const categorias = [
             { id: "cat-sustratos", n: "Sustratos", i: "📦" },
@@ -370,7 +405,7 @@
             document.getElementById('detalle-p').style.display = 'block';
             document.getElementById('btn-volver-cat').style.display = 'block';
             
-            const btnMP = p.linkPago ? `<button class="btn btn-mp" style="width:100%; margin-top:10px" onclick="window.open('${p.linkPago}', '_blank')">Pagar con Mercado Pago</button>` : '';
+            const btnMP = p.linkPago ? `<button class="btn btn-mp" style="width:100%; margin-top:10px" onclick="abrirModalEnvio('${p.linkPago}')">Pagar con Mercado Pago</button>` : '';
 
             document.getElementById('detalle-p').innerHTML = `
                 <div class="producto-detalle">
@@ -440,11 +475,39 @@
 
         function quitar(idx) { carrito.splice(idx,1); localStorage.setItem('superm_cart', JSON.stringify(carrito)); renderCarrito(); updateCartUI(); }
 
-        function finalizarPedido() {
-            let msg = "Hola Super M! Pedido:%0A" + carrito.map(i => `- ${i.q}x ${i.n}`).join("%0A") + "%0A%0A(Consultar costo de envío)";
-            window.open(`https://wa.me/${MI_NUMERO}?text=${msg}`);
-            carrito = []; localStorage.removeItem('superm_cart'); updateCartUI(); ver('view-gracias');
+        /* --- LOGICA MODAL Y FORMULARIO --- */
+        function abrirModalEnvio(contexto) {
+            contextoEnvio = contexto;
+            document.getElementById('modal-envio').style.display = 'flex';
         }
+
+        function cerrarModalEnvio() {
+            document.getElementById('modal-envio').style.display = 'none';
+        }
+
+        document.getElementById('btn-confirmar-envio').onclick = function() {
+            const n = document.getElementById('f-nombre').value;
+            const d = document.getElementById('f-direccion').value;
+            const l = document.getElementById('f-localidad').value;
+            const dni = document.getElementById('f-dni').value;
+            const cp = document.getElementById('f-cp').value;
+
+            if(!n || !d || !l) return alert("Por favor completa los datos básicos para el despacho.");
+
+            let datosTxt = `%0A%0A*DATOS DE DESPACHO:*%0A- Nombre: ${n}%0A- DNI: ${dni}%0A- Dirección: ${d}%0A- Localidad: ${l}%0A- CP: ${cp}`;
+
+            if(contextoEnvio === 'carrito') {
+                let msg = "Hola Super M! Pedido:%0A" + carrito.map(i => `- ${i.q}x ${i.n}`).join("%0A") + datosTxt;
+                window.open(`https://wa.me/${MI_NUMERO}?text=${msg}`);
+                carrito = []; localStorage.removeItem('superm_cart'); updateCartUI(); ver('view-gracias');
+            } else {
+                // Si es compra directa, enviamos los datos primero y luego abrimos el pago
+                let msg = "Hola Super M! Voy a realizar un pago directo para un producto." + datosTxt;
+                window.open(`https://wa.me/${MI_NUMERO}?text=${msg}`);
+                setTimeout(() => { window.open(contextoEnvio, '_blank'); }, 1000);
+            }
+            cerrarModalEnvio();
+        };
 
         function realizarBusqueda() {
             const q = document.getElementById('mainSearch').value.toLowerCase();
