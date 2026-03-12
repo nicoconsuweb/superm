@@ -84,7 +84,7 @@
         }
         .buscador:focus { border-color: var(--p); width: 350px; }
 
-        .btn { padding: 12px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
+        .btn { padding: 12px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.3s; display: inline-block; text-align: center; text-decoration: none; }
         .btn-v { background: var(--p); color: #000; }
         .btn-m { background: transparent; border: 1px solid var(--s); color: var(--s); }
         .btn-mp { background: #009ee3; color: #fff; border: none; }
@@ -144,6 +144,11 @@
 
         #cart-count { background: var(--s); color: #fff; padding: 2px 7px; border-radius: 10px; font-size: 0.7rem; }
         .aviso-logistica-txt { font-size: 0.75rem; color: var(--s); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; display: block; margin-top: 10px; text-align: center; border: 1px dashed var(--s); padding: 5px; border-radius: 5px; }
+
+        /* Estilos Página Error */
+        .error-box { text-align: center; background: var(--card); padding: 40px; border-radius: 20px; border: 2px solid var(--s); max-width: 500px; margin: 20px auto; box-shadow: 0 0 30px rgba(188, 19, 254, 0.1); }
+        .error-icon { font-size: 4rem; color: var(--s); margin-bottom: 20px; text-shadow: 0 0 15px var(--s); }
+        .error-msg { font-size: 1.1rem; color: var(--txt); margin-bottom: 30px; }
     </style>
 </head>
 <body>
@@ -265,6 +270,25 @@
         </div>
     </section>
 
+    <section id="view-error" class="seccion" style="text-align: center;">
+        <div class="error-box">
+            <div class="error-icon">∆</div>
+            <h2 style="color: var(--s); letter-spacing: 3px;">TRANSMUTACIÓN FALLIDA</h2>
+            <p class="error-msg">El flujo de energía se ha interrumpido. El pago no pudo ser procesado por el caldero de Mercado Pago.</p>
+            <div style="background: #000; padding: 15px; border-radius: 8px; border-left: 4px solid #ff4444; margin-bottom: 25px; text-align: left;">
+                <small style="color: #ff4444; font-weight: bold;">DIAGNÓSTICO:</small><br>
+                <small>Fondos insuficientes o conexión bancaria inestable.</small>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <button class="btn btn-v" onclick="ver('view-carrito')">Reintentar con el Carrito</button>
+                <a href="https://wa.me/5492966740488?text=Hola!%20Tuve%20un%20error%20en%20el%20pago%20de%20Super%20M%20y%20necesito%20ayuda" target="_blank" class="contact-link link-wa" style="justify-content: center; padding: 12px;">
+                   <span>🟢 Hablar con el Científico de Guardia</span>
+                </a>
+                <button class="btn btn-m" onclick="irAlInicio()">Volver al Inicio</button>
+            </div>
+        </div>
+    </section>
+
     <footer id="main-footer">
         <a href="https://wa.me/5492966740488" target="_blank" class="contact-link link-wa"><span>🟢 WhatsApp</span></a>
         <a href="https://instagram.com/marveggionicolas/" target="_blank" class="contact-link link-ig"><span>🟣 Instagram</span></a>
@@ -273,8 +297,6 @@
     <script>
         const mp = new MercadoPago('APP_USR-b1a36115-fd8e-4b35-ae27-fc6be6a9d178', { locale: 'es-AR' });
         const MI_NUMERO = "5492966740488";
-        
-        // URL DE IMPLEMENTACIÓN ACTUALIZADA
         const URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbze4x6TEPBeNJKeQ-xmlqbfilmLd6B62gLPD1aYqp6DsZiGFkX8L6hMIS5RyKiXOWlO/exec";
         
         let carrito = JSON.parse(localStorage.getItem('superm_cart')) || [];
@@ -321,9 +343,13 @@
             await cargarInventario();
             updateCartUI();
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('status') === 'approved') {
+            const status = urlParams.get('status');
+            
+            if (status === 'approved') {
                 ver('view-gracias');
                 carrito = []; localStorage.removeItem('superm_cart'); updateCartUI();
+            } else if (status === 'failure' || status === 'rejected') {
+                ver('view-error');
             } else {
                 const seccionActual = localStorage.getItem('superm_seccion');
                 if (seccionActual) ver(seccionActual, false);
@@ -498,7 +524,6 @@
             let totalPedido = 0;
             let origenVenta = ""; 
 
-            // DETERMINAR ORIGEN DE VENTA
             if(contextoEnvio === 'carrito') {
                 origenVenta = "Carrito";
                 pedidoTexto = carrito.map(i => `${i.q}x ${i.n}`).join(", ");
@@ -515,23 +540,15 @@
                 }
             }
 
-            // OBJETO FINAL PARA SHEETS (ORIGEN EN COLUMNA K)
             const objetoParaSheets = {
-                nombre: n, 
-                dni: dni, 
-                telefono: t, 
-                email: e,
-                direccion: d, 
-                localidad: l, 
-                cp: cp,
-                pedido: pedidoTexto, 
-                total: totalPedido, // Columna J
-                origen: origenVenta // Columna K
+                nombre: n, dni: dni, telefono: t, email: e,
+                direccion: d, localidad: l, cp: cp,
+                pedido: pedidoTexto, total: totalPedido, origen: origenVenta
             };
 
             await enviarAGoogleSheets(objetoParaSheets);
 
-            let msgWA = `Hola Super M! Nuevo Pedido (${origenVenta}): ${pedidoTexto}. \n\nDatos de entrega:\n- Nombre: ${n}\n- DNI: ${dni}\n- Tel: ${t}\n- Dir: ${d}, ${l} (CP: ${cp}).`;
+            let msgWA = `Hola Super M! Nuevo Pedido (${origenVenta}): ${pedidoTexto}. \n\nDatos de entrega:\n- Nombre: ${n}\n- Dir: ${d}, ${l}.`;
             window.open(`https://wa.me/${MI_NUMERO}?text=${encodeURIComponent(msgWA)}`, '_blank');
 
             if(contextoEnvio !== 'carrito' && contextoEnvio.includes('mercadopago')) {
@@ -588,7 +605,7 @@
         function notify(m) { 
             const n = document.getElementById('notificacion'); 
             n.innerText = m; n.style.display = 'block'; 
-            setTimeout(() => { n.style.display = 'none'; }, 3000); 
+            setTimeout(() => { n.style.display = 'none'; }, 3000);
         }
     </script>
 </body>
