@@ -47,7 +47,6 @@
             font-weight: bold; box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
         }
 
-        /* --- MODAL FORMULARIO --- */
         #modal-envio {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 9999;
@@ -56,7 +55,7 @@
         .form-box {
             background: var(--card); border: 2px solid var(--s); padding: 30px; border-radius: 15px;
             width: 90%; max-width: 450px; box-shadow: 0 0 30px rgba(188, 19, 254, 0.2);
-            overflow-y: auto; max-height: 90vh; /* Para asegurar que se vea en móviles */
+            overflow-y: auto; max-height: 90vh;
         }
         .form-box h3 { color: var(--p); text-align: center; margin-top: 0; letter-spacing: 2px; }
         .form-box input {
@@ -125,11 +124,7 @@
             align-items: center; margin-bottom: 15px; overflow: hidden; border: 1px solid #222;
         }
         .img-placeholder { font-size: 3.5rem; }
-        .img-real { 
-            width: 100%; height: 100%; 
-            object-fit: contain; 
-            padding: 10px; transition: 0.4s ease; 
-        }
+        .img-real { width: 100%; height: 100%; object-fit: contain; padding: 10px; transition: 0.4s ease; }
         
         .producto-detalle { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; background: var(--card); padding: 40px; border-radius: 20px; border: 1px solid #333; margin-bottom: 50px; }
         .det-info h2 { color: var(--p); font-size: 2.5rem; margin-top: 0; }
@@ -139,7 +134,6 @@
         .qty-selector { display: flex; align-items: center; background: #000; border: 1px solid #333; border-radius: 8px; height: 35px; overflow: hidden; width: fit-content; }
         .qty-btn { background: transparent; color: var(--p); border: none; width: 30px; height: 100%; cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
         .qty-btn:hover { background: #111; }
-        .qty-val { width: 35px; text-align: center; font-weight: bold; color: #fff; font-size: 0.9rem; }
         .qty-input { width: 50px; height: 100%; background: transparent; color: #fff; border: none; border-left: 1px solid #222; border-right: 1px solid #222; text-align: center; font-weight: bold; font-family: inherit; font-size: 1rem; outline: none; }
 
         .contenedor-tabla { overflow-x: auto; background: #050505; padding: 20px; border-radius: 12px; border: 1px solid var(--p); }
@@ -158,12 +152,12 @@
 
     <div id="modal-envio">
         <div class="form-box">
-            <h3>DATOS DE ENVÍO</h3>
+            <h3 id="form-titulo">DATOS DE ENVÍO</h3>
             <input type="text" id="f-nombre" placeholder="Nombre y Apellido completo">
             <input type="text" id="f-dni" placeholder="DNI">
-            <input type="tel" id="f-telefono" placeholder="Teléfono de Contacto (Ej: 2966123456)">
-            <input type="email" id="f-email" placeholder="Email (para envío del tracking)">
-            <input type="text" id="f-direccion" placeholder="Dirección Exacta (Calle y Número)">
+            <input type="tel" id="f-telefono" placeholder="Teléfono de Contacto">
+            <input type="email" id="f-email" placeholder="Email">
+            <input type="text" id="f-direccion" placeholder="Calle y Número">
             <input type="text" id="f-localidad" placeholder="Localidad / Provincia">
             <input type="text" id="f-cp" placeholder="Código Postal">
             <div style="font-size: 0.7rem; color: var(--s); margin: 10px 0; text-align: center; border: 1px dashed var(--s); padding: 5px;">
@@ -188,12 +182,8 @@
         </div>
 
         <div style="display: flex; gap: 20px; align-items: center; justify-content: center;">
-            <a href="https://wa.me/5492966740488" target="_blank" class="contact-link link-wa">
-                <span>🟢 WhatsApp</span>
-            </a>
-            <a href="https://instagram.com/marveggionicolas/" target="_blank" class="contact-link link-ig">
-                <span>🟣 Instagram</span>
-            </a>
+            <a href="https://wa.me/5492966740488" target="_blank" class="contact-link link-wa"><span>🟢 WhatsApp</span></a>
+            <a href="https://instagram.com/marveggionicolas/" target="_blank" class="contact-link link-ig"><span>🟣 Instagram</span></a>
         </div>
     </section>
 
@@ -220,9 +210,7 @@
         <h2 style="color:var(--p)">Tabla de Seguimiento</h2>
         <div id="area-descarga" class="contenedor-tabla">
             <table id="tabla-lab">
-                <thead>
-                    <tr><th>Semana</th><th>Fase</th><th>pH</th><th>EC</th><th>T° C</th><th>H %</th><th>Riego</th><th>Observaciones</th></tr>
-                </thead>
+                <thead><tr><th>Semana</th><th>Fase</th><th>pH</th><th>EC</th><th>T° C</th><th>H %</th><th>Riego</th><th>Observaciones</th></tr></thead>
                 <tbody id="cuerpo-tabla"></tbody>
             </table>
         </div>
@@ -236,12 +224,12 @@
     <section id="info" class="seccion">
         <h2 style="color:var(--s)">Notas del Alquimista</h2>
         <div id="menu-notas" class="grid">
-            <div class="tarjeta" onclick="verNota('n1')"><h3>🧪 Control pH/EC</h3><p>Estabilidad química del sustrato.</p></div>
-            <div class="tarjeta" onclick="verNota('n2')"><h3>🔄 Ciclo Infinito</h3><p>Metodología de cosecha perpetua.</p></div>
-            <div class="tarjeta" onclick="verNota('n3')"><h3>🌿 Nutrición Pro</h3><p>Balance NPK y micronutrientes.</p></div>
-            <div class="tarjeta" onclick="verNota('n4')"><h3>🌡️ VPD y Clima</h3><p>Relación Presión/Humedad.</p></div>
-            <div class="tarjeta" onclick="verNota('n5')"><h3>🌊 Hidroponía</h3><p>Sistemas DWC y RDWC.</p></div>
-            <div class="tarjeta" onclick="verNota('n6')"><h3>🧬 Madres y Clones</h3><p>Preservación genética avanzada.</p></div>
+            <div class="tarjeta" onclick="verNota('n1')"><h3>🧪 Control pH/EC</h3><p>Estabilidad química.</p></div>
+            <div class="tarjeta" onclick="verNota('n2')"><h3>🔄 Ciclo Infinito</h3><p>Cosecha perpetua.</p></div>
+            <div class="tarjeta" onclick="verNota('n3')"><h3>🌿 Nutrición Pro</h3><p>Balance NPK.</p></div>
+            <div class="tarjeta" onclick="verNota('n4')"><h3>🌡️ VPD y Clima</h3><p>Presión/Humedad.</p></div>
+            <div class="tarjeta" onclick="verNota('n5')"><h3>🌊 Hidroponía</h3><p>Sistemas DWC.</p></div>
+            <div class="tarjeta" onclick="verNota('n6')"><h3>🧬 Madres y Clones</h3><p>Preservación genética.</p></div>
         </div>
         <div id="visor-notas" style="display:none; background:var(--card); padding:30px; border-radius:15px; border:2px solid var(--s);">
             <div id="contenido-nota"></div>
@@ -257,47 +245,41 @@
             <span style="font-size: 1rem; color: #888;">Total: </span>
             <span id="total-carrito" style="color:var(--p); font-weight: 900;">$0</span>
         </div>
-        <button class="btn btn-v" style="width:100%; margin-top:20px" onclick="abrirModalEnvio('carrito')">Confirmar y Enviar Pedido</button>
+        <button class="btn btn-v" id="btn-finalizar-carrito" style="width:100%; margin-top:20px" onclick="abrirModalEnvio('carrito')">Confirmar y Enviar Pedido</button>
     </section>
 
     <section id="view-gracias" class="seccion" style="text-align: center;">
         <div class="logo-frame" style="border-color: var(--s); display: inline-block; margin-top: 30px;">
             <h2 style="color: var(--s); margin: 0; letter-spacing: 5px; font-weight: 900;">¡TRANSFORMACIÓN INICIADA!</h2>
         </div>
-        <p style="font-size: 1.3rem; margin: 30px 0; color: var(--txt); font-style: italic;">
-            "La transmutación de tu jardín ha comenzado, Alquimista."
-        </p>
-        <div style="background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid var(--p); max-content: 550px; margin: 0 auto; text-align: left; box-shadow: 0 0 20px rgba(57, 255, 20, 0.1);">
-            <h3 style="color: var(--p); text-align: center; margin-top: 0; text-transform: uppercase; letter-spacing: 2px;">Protocolo de Despacho</h3>
-            <div style="color: #ccc; line-height: 1.8;">
-                <p><strong>1. Confirmación:</strong> Hemos recibido el reporte de tu pago con éxito.</p>
-                <p><strong>2. Preparación:</strong> Tus insumos están siendo seleccionados bajo estrictos estándares de calidad.</p>
-                <p><strong>3. Logística:</strong> En breve te contactaremos vía WhatsApp para coordinar el envío o retiro.</p>
-            </div>
+        <p style="font-size: 1.3rem; margin: 30px 0; color: var(--txt); font-style: italic;">"La transmutación de tu jardín ha comenzado."</p>
+        <div style="background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid var(--p); max-width: 550px; margin: 0 auto; text-align: left;">
+            <h3 style="color: var(--p); text-align: center; margin-top: 0;">Protocolo de Despacho</h3>
+            <p>1. <b>Registro:</b> Tus datos ya están en nuestra base de datos segura.</p>
+            <p>2. <b>Confirmación:</b> Si elegiste Mercado Pago, procesaremos el pago.</p>
+            <p>3. <b>WhatsApp:</b> Te contactaremos en breve para coordinar logística.</p>
         </div>
-        <div style="margin-top: 40px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+        <div style="margin-top: 40px; display: flex; gap: 15px; justify-content: center;">
             <button class="btn btn-v" onclick="ver('info')">revisar Notas</button>
             <button class="btn btn-m" onclick="irAlInicio()">Volver al Inicio</button>
         </div>
-        <p style="margin-top: 50px; color: #555; font-size: 0.8rem;">Super M Growshop - Control & Genética</p>
     </section>
 
     <footer id="main-footer">
-        <a href="https://wa.me/5492966740488" target="_blank" class="contact-link link-wa" style="font-size: 0.8rem;">
-            <span>🟢 Consultas WhatsApp</span>
-        </a>
-        <a href="https://instagram.com/marveggionicolas/" target="_blank" class="contact-link link-ig" style="font-size: 0.8rem;">
-            <span>🟣 Instagram</span>
-        </a>
+        <a href="https://wa.me/5492966740488" target="_blank" class="contact-link link-wa"><span>🟢 WhatsApp</span></a>
+        <a href="https://instagram.com/marveggionicolas/" target="_blank" class="contact-link link-ig"><span>🟣 Instagram</span></a>
     </footer>
 
     <script>
         const mp = new MercadoPago('APP_USR-b1a36115-fd8e-4b35-ae27-fc6be6a9d178', { locale: 'es-AR' });
         const MI_NUMERO = "5492966740488";
+        // TU URL DE GOOGLE SHEETS
+        const URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbzDtXJGmOa8SuAqYtQu9BwSR1ZsiNoz7bDOtBA71ecW123W9cxwFAHHlws61ikENRQ/exec";
+        
         let carrito = JSON.parse(localStorage.getItem('superm_cart')) || [];
         let productos = [];
-        let contextoEnvio = null; // 'carrito' o el link de pago directo
-        
+        let contextoEnvio = null;
+
         const categorias = [
             { id: "cat-sustratos", n: "Sustratos", i: "📦" },
             { id: "cat-nutricion", n: "Nutrición", i: "🧪" },
@@ -309,12 +291,12 @@
         ];
 
         const notas = {
-            n1: "<h2>🧪 Control pH/EC</h2><p>pH ideal: 6.2-6.5 en suelo. EC según fase: 0.8 a 2.0.</p>",
-            n2: "<h2>🔄 Ciclo Infinito</h2><p>Cosecha perpetua dividiendo áreas de vege y flora.</p>",
-            n3: "<h2>🌿 Nutrición Pro</h2><p>Balance NPK y microelementos quelatados.</p>",
-            n4: "<h2>🌡️ VPD y Clima</h2><p>Relación temperatura y humedad para transpiración óptima.</p>",
-            n5: "<h2>🌊 Hidroponía</h2><p>Crecimiento explosivo en sistemas DWC/RDWC.</p>",
-            n6: "<h2>🧬 Madres y Clones</h2><p>Preservación de genéticas y técnicas de esquejado.</p>"
+            n1: "<h2>🧪 Control pH/EC</h2><p>pH ideal: 6.2-6.5 en suelo.</p>",
+            n2: "<h2>🔄 Ciclo Infinito</h2><p>Cosecha perpetua con vege y flora separadas.</p>",
+            n3: "<h2>🌿 Nutrición Pro</h2><p>Balance NPK y microelementos.</p>",
+            n4: "<h2>🌡️ VPD y Clima</h2><p>Relación temperatura y humedad.</p>",
+            n5: "<h2>🌊 Hidroponía</h2><p>Crecimiento explosivo en DWC.</p>",
+            n6: "<h2>🧬 Madres y Clones</h2><p>Preservación de genéticas.</p>"
         };
 
         async function cargarInventario() {
@@ -391,9 +373,7 @@
                 <div class="tarjeta" onclick="verProducto(${p.id})">
                     <div class="contenedor-img">${obtenerImagenHTML(p.i)}</div>
                     <h3 style="margin: 10px 0; text-align: center;">${p.n}</h3>
-                    <div style="text-align: center; color: var(--p); font-weight: bold; margin-top: auto;">
-                        $${p.p.toLocaleString()}
-                    </div>
+                    <div style="text-align: center; color: var(--p); font-weight: bold; margin-top: auto;">$${p.p.toLocaleString()}</div>
                 </div>
             `).join('');
         }
@@ -429,7 +409,7 @@
                                 <button class="btn btn-v" style="flex:1" onclick="add(${p.id})">Añadir al Carrito</button>
                             </div>
                             ${btnMP} 
-                            <span class="aviso-logistica-txt">⚠️ Logística: Envío a convenir / Consultar antes de pagar</span>
+                            <span class="aviso-logistica-txt">⚠️ Logística: Envío a convenir</span>
                         </div>
                     </div>
                 </div>`;
@@ -479,44 +459,78 @@
 
         function quitar(idx) { carrito.splice(idx,1); localStorage.setItem('superm_cart', JSON.stringify(carrito)); renderCarrito(); updateCartUI(); }
 
-        /* --- LOGICA MODAL Y FORMULARIO ACTUALIZADA CON TEL Y EMAIL --- */
         function abrirModalEnvio(contexto) {
             contextoEnvio = contexto;
             document.getElementById('modal-envio').style.display = 'flex';
         }
 
-        function cerrarModalEnvio() {
-            document.getElementById('modal-envio').style.display = 'none';
+        function cerrarModalEnvio() { document.getElementById('modal-envio').style.display = 'none'; }
+
+        // --- FUNCIÓN MAGICA: ENVÍA A GOOGLE SHEETS ---
+        async function enviarAGoogleSheets(datos) {
+            try {
+                await fetch(URL_GOOGLE_SHEETS, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                console.log("Datos enviados a Sheets con éxito.");
+            } catch (e) { console.error("Error enviando a Sheets:", e); }
         }
 
-        document.getElementById('btn-confirmar-envio').onclick = function() {
+        document.getElementById('btn-confirmar-envio').onclick = async function() {
+            const btn = this;
             const n = document.getElementById('f-nombre').value;
             const dni = document.getElementById('f-dni').value;
-            const t = document.getElementById('f-telefono').value; // Nuevo
-            const e = document.getElementById('f-email').value; // Nuevo
+            const t = document.getElementById('f-telefono').value;
+            const e = document.getElementById('f-email').value;
             const d = document.getElementById('f-direccion').value;
             const l = document.getElementById('f-localidad').value;
             const cp = document.getElementById('f-cp').value;
 
-            // Validación básica: Nombre, Tel y Dirección son clave
-            if(!n || !t || !d || !l) return alert("Por favor completa los datos básicos: Nombre, Teléfono, Dirección y Localidad.");
+            if(!n || !t || !d) return alert("Completa Nombre, Teléfono y Dirección.");
 
-            // Estructura de los datos para WhatsApp
-            let datosTxt = `%0A%0A*DATOS DE DESPACHO:*%0A- Nombre: ${n}%0A- DNI: ${dni}%0A- Teléfono: ${t}%0A- Email: ${e}%0A- Dirección: ${d}%0A- Localidad: ${l}%0A- CP: ${cp}`;
+            btn.disabled = true;
+            btn.innerText = "PROCESANDO...";
+
+            let pedidoTexto = "";
+            let totalPedido = 0;
 
             if(contextoEnvio === 'carrito') {
-                let msg = "Hola Super M! Pedido:%0A" + carrito.map(i => `- ${i.q}x ${i.n}`).join("%0A") + datosTxt;
-                window.open(`https://wa.me/${MI_NUMERO}?text=${msg}`);
-                carrito = []; localStorage.removeItem('superm_cart'); updateCartUI(); ver('view-gracias');
+                pedidoTexto = carrito.map(i => `${i.q}x ${i.n}`).join(", ");
+                totalPedido = carrito.reduce((a, b) => a + (b.p * b.q), 0);
             } else {
-                // Si es compra directa, enviamos los datos primero y luego abrimos el pago
-                let msg = "Hola Super M! Voy a realizar un pago directo para un producto." + datosTxt;
-                window.open(`https://wa.me/${MI_NUMERO}?text=${msg}`);
+                pedidoTexto = "Compra Directa / Link MP";
+                totalPedido = "Ver Link";
+            }
+
+            const objetoParaSheets = {
+                nombre: n, dni: dni, telefono: t, email: e,
+                direccion: d, localidad: l, cp: cp,
+                pedido: pedidoTexto, total: totalPedido
+            };
+
+            // 1. Enviamos a la planilla
+            await enviarAGoogleSheets(objetoParaSheets);
+
+            // 2. Preparamos WhatsApp
+            let msgWA = `Hola Super M! Pedido: ${pedidoTexto}. Datos: ${n}, DNI ${dni}, Tel ${t}, Dir: ${d}, ${l}.`;
+            window.open(`https://wa.me/${MI_NUMERO}?text=${encodeURIComponent(msgWA)}`);
+
+            // 3. Si era link de pago, lo abrimos después
+            if(contextoEnvio !== 'carrito') {
                 setTimeout(() => { window.open(contextoEnvio, '_blank'); }, 1000);
             }
+
+            // Limpieza
             cerrarModalEnvio();
-            // Limpiar formulario
-            document.querySelectorAll('#modal-envio input').forEach(input => input.value = '');
+            btn.disabled = false;
+            btn.innerText = "Confirmar";
+            if(contextoEnvio === 'carrito') {
+                carrito = []; localStorage.removeItem('superm_cart'); updateCartUI(); ver('view-gracias');
+            }
         };
 
         function realizarBusqueda() {
