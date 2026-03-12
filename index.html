@@ -120,6 +120,13 @@
 
         /* Estilo Aviso Envío */
         .aviso-envio { font-size: 0.75rem; color: var(--s); margin-top: 5px; font-weight: bold; text-align: center; display: block; }
+
+        /* Estilo Sección Gracias */
+        .exito-box {
+            text-align: center; padding: 60px 20px; border: 2px solid var(--p); 
+            border-radius: 20px; background: var(--card); 
+            box-shadow: 0 0 30px rgba(57, 255, 20, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -200,8 +207,17 @@
         <p style="text-align:center; color:#666; font-size:0.8rem; margin-top:10px;">Al enviar, coordinaremos el método de envío y pago total.</p>
     </section>
 
+    <section id="gracias" class="seccion">
+        <div class="exito-box">
+            <div style="font-size:4rem; margin-bottom:20px;">🧪</div>
+            <h2 style="color:var(--p); font-size:2.5rem; margin-top:0;">¡Transmutación Exitosa!</h2>
+            <p style="font-size:1.2rem; max-width:600px; margin: 0 auto 20px auto;">Tu pedido ha sido procesado por el laboratorio. Mercado Pago ha confirmado la operación.</p>
+            <p style="color:#888;">Revisa tu email para ver el comprobante. Nos pondremos en contacto contigo a la brevedad para gestionar el envío.</p>
+            <button class="btn btn-v" style="margin-top:30px; padding: 15px 40px;" onclick="irAlInicio()">Volver al Inicio</button>
+        </div>
+    </section>
+
     <script>
-        // CONFIGURACIÓN MERCADO PAGO
         const mp = new MercadoPago('APP_USR-b1a36115-fd8e-4b35-ae27-fc6be6a9d178', { locale: 'es-AR' });
 
         const MI_NUMERO = "5492966740488";
@@ -251,13 +267,25 @@
 
         window.onload = async () => {
             await cargarInventario();
-            updateCartUI();
-            if (!sessionStorage.getItem('superm_sesion_activa')) {
-                sessionStorage.setItem('superm_sesion_activa', 'true');
-                irAlInicio(); 
+            
+            // Lógica de detección de regreso de Mercado Pago
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('status') === 'approved') {
+                // Si el pago fue aprobado, limpiamos todo y mostramos sección Gracias
+                carrito = [];
+                localStorage.removeItem('superm_cart');
+                updateCartUI();
+                ver('gracias', false);
             } else {
-                const seccionActual = localStorage.getItem('superm_seccion');
-                if (seccionActual) ver(seccionActual, false);
+                // Lógica normal de carga de la web
+                updateCartUI();
+                if (!sessionStorage.getItem('superm_sesion_activa')) {
+                    sessionStorage.setItem('superm_sesion_activa', 'true');
+                    irAlInicio(); 
+                } else {
+                    const seccionActual = localStorage.getItem('superm_seccion');
+                    if (seccionActual) ver(seccionActual, false);
+                }
             }
         };
 
@@ -265,7 +293,7 @@
             localStorage.removeItem('superm_seccion'); 
             localStorage.removeItem('superm_prod_id'); 
             localStorage.removeItem('superm_cat_id');
-            location.reload();
+            window.location.href = window.location.pathname; // Recarga limpia sin parámetros de URL
         }
 
         function ver(id, guardar = true) {
@@ -335,7 +363,6 @@
             document.getElementById('detalle-p').style.display = 'block';
             document.getElementById('btn-volver-cat').style.display = 'block';
             
-            // Botón Mercado Pago con aviso de envío incluido
             const btnMP = p.linkPago ? `
                 <div style="margin-top:15px;">
                     <button class="btn btn-mp" style="width:100%;" onclick="window.open('${p.linkPago}', '_blank')">Comprar ahora (Mercado Pago)</button>
@@ -390,7 +417,6 @@
             document.getElementById('cart-count').innerText = carrito.reduce((a, b) => a + b.q, 0); 
         }
 
-        // --- MEJORA CARRITO Y CALCULADORA ---
         function renderCarrito() {
             const lista = document.getElementById('lista-carrito');
             let total = 0;
@@ -429,7 +455,6 @@
 
         function ajustarCarrito(idx, cambio) {
             carrito[idx].q += cambio;
-            
             if (carrito[idx].q < 1) {
                 if(confirm(`¿Deseas eliminar "${carrito[idx].n}" del pedido?`)) {
                     carrito.splice(idx, 1);
@@ -437,7 +462,6 @@
                     carrito[idx].q = 1;
                 }
             }
-            
             localStorage.setItem('superm_cart', JSON.stringify(carrito));
             renderCarrito();
             updateCartUI();
@@ -451,7 +475,6 @@
                 updateCartUI();
             }
         }
-        // --- FIN MEJORAS ---
 
         function finalizarPedido() {
             if(!carrito.length) return;
