@@ -83,7 +83,6 @@
         .link-ig { color: var(--s); }
         .link-ig:hover { text-shadow: 0 0 10px var(--s); }
 
-        /* Footer al final de la página (no superpuesto) */
         footer {
             width: 100%; background: #111;
             border-top: 1px solid #222; padding: 30px 0; display: none;
@@ -98,7 +97,7 @@
         .tarjeta { 
             background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid #222; 
             transition: 0.3s; display: flex; flex-direction: column; overflow: hidden;
-            height: 100%;
+            height: 100%; cursor: pointer;
         }
         .tarjeta:hover { border-color: var(--p); transform: translateY(-3px); }
         
@@ -119,7 +118,6 @@
         .det-precio { font-size: 2rem; color: var(--s); font-weight: bold; margin: 20px 0; }
         .det-ficha { background: #000; padding: 20px; border-radius: 10px; border-left: 4px solid var(--p); margin: 20px 0; }
         
-        /* Selectores de cantidad */
         .qty-selector { display: flex; align-items: center; background: #000; border: 1px solid #333; border-radius: 8px; height: 35px; overflow: hidden; width: fit-content; }
         .qty-btn { background: transparent; color: var(--p); border: none; width: 30px; height: 100%; cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
         .qty-btn:hover { background: #111; }
@@ -133,7 +131,7 @@
         .input-tabla { background: transparent; border: 1px solid #222; color: #fff; padding: 8px; border-radius: 4px; width: 90%; text-align: center; }
 
         #cart-count { background: var(--s); color: #fff; padding: 2px 7px; border-radius: 10px; font-size: 0.7rem; }
-        .aviso-envio { font-size: 0.75rem; color: var(--s); margin-top: 5px; font-weight: bold; text-align: center; display: block; }
+        .aviso-logistica-txt { font-size: 0.75rem; color: var(--s); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; display: block; margin-top: 10px; text-align: center; border: 1px dashed var(--s); padding: 5px; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -200,12 +198,12 @@
     <section id="info" class="seccion">
         <h2 style="color:var(--s)">Notas del Alquimista</h2>
         <div id="menu-notas" class="grid">
-            <div class="tarjeta" style="cursor:pointer; border-color:var(--s)" onclick="verNota('n1')"><h3>🧪 Control pH/EC</h3><p>Estabilidad química del sustrato.</p></div>
-            <div class="tarjeta" style="cursor:pointer; border-color:var(--s)" onclick="verNota('n2')"><h3>🔄 Ciclo Infinito</h3><p>Metodología de cosecha perpetua.</p></div>
-            <div class="tarjeta" style="cursor:pointer; border-color:var(--s)" onclick="verNota('n3')"><h3>🌿 Nutrición Pro</h3><p>Balance NPK y micronutrientes.</p></div>
-            <div class="tarjeta" style="cursor:pointer; border-color:var(--s)" onclick="verNota('n4')"><h3>🌡️ VPD y Clima</h3><p>Relación Presión/Humedad.</p></div>
-            <div class="tarjeta" style="cursor:pointer; border-color:var(--s)" onclick="verNota('n5')"><h3>🌊 Hidroponía</h3><p>Sistemas DWC y RDWC.</p></div>
-            <div class="tarjeta" style="cursor:pointer; border-color:var(--s)" onclick="verNota('n6')"><h3>🧬 Madres y Clones</h3><p>Preservación genética avanzada.</p></div>
+            <div class="tarjeta" onclick="verNota('n1')"><h3>🧪 Control pH/EC</h3><p>Estabilidad química del sustrato.</p></div>
+            <div class="tarjeta" onclick="verNota('n2')"><h3>🔄 Ciclo Infinito</h3><p>Metodología de cosecha perpetua.</p></div>
+            <div class="tarjeta" onclick="verNota('n3')"><h3>🌿 Nutrición Pro</h3><p>Balance NPK y micronutrientes.</p></div>
+            <div class="tarjeta" onclick="verNota('n4')"><h3>🌡️ VPD y Clima</h3><p>Relación Presión/Humedad.</p></div>
+            <div class="tarjeta" onclick="verNota('n5')"><h3>🌊 Hidroponía</h3><p>Sistemas DWC y RDWC.</p></div>
+            <div class="tarjeta" onclick="verNota('n6')"><h3>🧬 Madres y Clones</h3><p>Preservación genética avanzada.</p></div>
         </div>
         <div id="visor-notas" style="display:none; background:var(--card); padding:30px; border-radius:15px; border:2px solid var(--s);">
             <div id="contenido-nota"></div>
@@ -217,21 +215,20 @@
         <h2 style="color:var(--s)">Tu Pedido</h2>
         <div id="lista-carrito" style="background:#111; padding:20px; border-radius:12px;">Tu Carrito está vacío.</div>
         <div style="text-align:right; font-size:1.5rem; margin-top:20px;">
-            <div style="font-size:0.9rem; color:#888;">Logística: <span style="color:var(--s)">Envío no incluido</span></div>
-            Total: <span id="total-carrito" style="color:var(--p); font-weight: 900;">$0</span>
+            <div style="font-size:0.8rem; color:var(--s); font-weight:bold; margin-bottom:5px;">📦 LOGÍSTICA: ENVÍO A CONVENIR</div>
+            <span style="font-size: 1rem; color: #888;">Total: </span>
+            <span id="total-carrito" style="color:var(--p); font-weight: 900;">$0</span>
         </div>
         <button class="btn btn-v" style="width:100%; margin-top:20px" onclick="finalizarPedido()">Enviar pedido por WhatsApp</button>
     </section>
 
-<section id="view-gracias" class="seccion" style="text-align: center;">
+    <section id="view-gracias" class="seccion" style="text-align: center;">
         <div class="logo-frame" style="border-color: var(--s); display: inline-block; margin-top: 30px;">
             <h2 style="color: var(--s); margin: 0; letter-spacing: 5px; font-weight: 900;">¡TRANSFORMACIÓN INICIADA!</h2>
         </div>
-        
         <p style="font-size: 1.3rem; margin: 30px 0; color: var(--txt); font-style: italic;">
             "La transmutación de tu jardín ha comenzado, Alquimista."
         </p>
-
         <div style="background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid var(--p); max-content: 550px; margin: 0 auto; text-align: left; box-shadow: 0 0 20px rgba(57, 255, 20, 0.1);">
             <h3 style="color: var(--p); text-align: center; margin-top: 0; text-transform: uppercase; letter-spacing: 2px;">Protocolo de Despacho</h3>
             <div style="color: #ccc; line-height: 1.8;">
@@ -240,12 +237,10 @@
                 <p><strong>3. Logística:</strong> En breve te contactaremos vía WhatsApp para coordinar el envío o retiro.</p>
             </div>
         </div>
-
         <div style="margin-top: 40px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
             <button class="btn btn-v" onclick="ver('info')">revisar Notas</button>
             <button class="btn btn-m" onclick="irAlInicio()">Volver al Inicio</button>
         </div>
-        
         <p style="margin-top: 50px; color: #555; font-size: 0.8rem;">Super M Growshop - Control & Genética</p>
     </section>
 
@@ -336,7 +331,7 @@
             document.getElementById('titulo-tienda').innerText = "Categorías";
             const grid = document.getElementById('grid-p');
             grid.innerHTML = categorias.map(c => `
-                <div class="tarjeta" style="cursor:pointer" onclick="filtrarProductos('${c.id}', '${c.n}')">
+                <div class="tarjeta" onclick="filtrarProductos('${c.id}', '${c.n}')">
                     <div class="contenedor-img">${obtenerImagenHTML(c.i)}</div>
                     <h3 style="text-align:center">${c.n}</h3>
                 </div>
@@ -356,10 +351,9 @@
             grid.innerHTML = lista.map(p => `
                 <div class="tarjeta" onclick="verProducto(${p.id})">
                     <div class="contenedor-img">${obtenerImagenHTML(p.i)}</div>
-                    <h3 style="margin: 10px 0;">${p.n}</h3>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto">
-                        <span style="color:var(--p); font-weight:bold">$${p.p.toLocaleString()}</span>
-                        <button class="btn btn-v" style="padding:5px 15px">VER</button>
+                    <h3 style="margin: 10px 0; text-align: center;">${p.n}</h3>
+                    <div style="text-align: center; color: var(--p); font-weight: bold; margin-top: auto;">
+                        $${p.p.toLocaleString()}
                     </div>
                 </div>
             `).join('');
@@ -370,13 +364,12 @@
             return `<div class="img-placeholder">${dato}</div>`;
         }
 
-function verProducto(id) {
+        function verProducto(id) {
             const p = productos.find(x => x.id === id);
             document.getElementById('grid-p').style.display = 'none';
             document.getElementById('detalle-p').style.display = 'block';
             document.getElementById('btn-volver-cat').style.display = 'block';
             
-            // Generar botón de Mercado Pago solo si existe el link
             const btnMP = p.linkPago ? `<button class="btn btn-mp" style="width:100%; margin-top:10px" onclick="window.open('${p.linkPago}', '_blank')">Pagar con Mercado Pago</button>` : '';
 
             document.getElementById('detalle-p').innerHTML = `
@@ -394,9 +387,10 @@ function verProducto(id) {
                                     <input type="number" class="qty-input" id="qty-det" value="1">
                                     <button class="qty-btn" onclick="changeQtyDet(1)">+</button>
                                 </div>
-                                <button class="btn btn-v" style="flex:1" onclick="add(${p.id})">Añadir</button>
+                                <button class="btn btn-v" style="flex:1" onclick="add(${p.id})">Añadir al Carrito</button>
                             </div>
                             ${btnMP} 
+                            <span class="aviso-logistica-txt">⚠️ Logística: Envío a convenir / Consultar antes de pagar</span>
                         </div>
                     </div>
                 </div>`;
@@ -447,7 +441,7 @@ function verProducto(id) {
         function quitar(idx) { carrito.splice(idx,1); localStorage.setItem('superm_cart', JSON.stringify(carrito)); renderCarrito(); updateCartUI(); }
 
         function finalizarPedido() {
-            let msg = "Hola Super M! Pedido:%0A" + carrito.map(i => `- ${i.q}x ${i.n}`).join("%0A");
+            let msg = "Hola Super M! Pedido:%0A" + carrito.map(i => `- ${i.q}x ${i.n}`).join("%0A") + "%0A%0A(Consultar costo de envío)";
             window.open(`https://wa.me/${MI_NUMERO}?text=${msg}`);
             carrito = []; localStorage.removeItem('superm_cart'); updateCartUI(); ver('view-gracias');
         }
