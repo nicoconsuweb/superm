@@ -72,7 +72,25 @@
         .btn-m { background: transparent; border: 1px solid var(--s); color: var(--s); }
         .btn-mp { background: #009ee3; color: #fff; border: none; }
 
-        .seccion { display: none; padding: 60px 5%; max-width: 1200px; margin: auto; }
+        .contact-link { 
+            text-decoration: none; font-size: 0.9rem; font-weight: bold; 
+            display: flex; align-items: center; gap: 8px; transition: 0.3s;
+            padding: 8px 15px; border-radius: 20px; background: rgba(255,255,255,0.03);
+        }
+        .contact-link:hover { transform: translateY(-2px); background: rgba(255,255,255,0.08); }
+        .link-wa { color: var(--p); }
+        .link-wa:hover { text-shadow: 0 0 10px var(--p); }
+        .link-ig { color: var(--s); }
+        .link-ig:hover { text-shadow: 0 0 10px var(--s); }
+
+        /* Footer al final de la página (no superpuesto) */
+        footer {
+            width: 100%; background: #111;
+            border-top: 1px solid #222; padding: 30px 0; display: none;
+            justify-content: center; gap: 30px; margin-top: 50px;
+        }
+
+        .seccion { display: none; padding: 60px 5% 20px 5%; max-width: 1200px; margin: auto; min-height: 70vh; }
         .activa { display: block !important; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
@@ -95,19 +113,18 @@
             object-fit: contain; 
             padding: 10px; transition: 0.4s ease; 
         }
-        .tarjeta:hover .img-real { transform: scale(1.08); }
         
         .producto-detalle { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; background: var(--card); padding: 40px; border-radius: 20px; border: 1px solid #333; margin-bottom: 50px; }
         .det-info h2 { color: var(--p); font-size: 2.5rem; margin-top: 0; }
         .det-precio { font-size: 2rem; color: var(--s); font-weight: bold; margin: 20px 0; }
         .det-ficha { background: #000; padding: 20px; border-radius: 10px; border-left: 4px solid var(--p); margin: 20px 0; }
         
+        /* Selectores de cantidad */
         .qty-selector { display: flex; align-items: center; background: #000; border: 1px solid #333; border-radius: 8px; height: 35px; overflow: hidden; width: fit-content; }
         .qty-btn { background: transparent; color: var(--p); border: none; width: 30px; height: 100%; cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
         .qty-btn:hover { background: #111; }
         .qty-val { width: 35px; text-align: center; font-weight: bold; color: #fff; font-size: 0.9rem; }
         .qty-input { width: 50px; height: 100%; background: transparent; color: #fff; border: none; border-left: 1px solid #222; border-right: 1px solid #222; text-align: center; font-weight: bold; font-family: inherit; font-size: 1rem; outline: none; }
-        .qty-input::-webkit-inner-spin-button, .qty-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
         .contenedor-tabla { overflow-x: auto; background: #050505; padding: 20px; border-radius: 12px; border: 1px solid var(--p); }
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
@@ -116,7 +133,6 @@
         .input-tabla { background: transparent; border: 1px solid #222; color: #fff; padding: 8px; border-radius: 4px; width: 90%; text-align: center; }
 
         #cart-count { background: var(--s); color: #fff; padding: 2px 7px; border-radius: 10px; font-size: 0.7rem; }
-
         .aviso-envio { font-size: 0.75rem; color: var(--s); margin-top: 5px; font-weight: bold; text-align: center; display: block; }
     </style>
 </head>
@@ -128,10 +144,20 @@
         <div class="logo-frame"><h1 class="logo-txt">SUPER M</h1></div>
         <p style="color: #888; margin-bottom: 30px;">Growshop & Laboratorio de Cultivo Técnico</p>
         <input type="text" class="buscador" id="mainSearch" placeholder="¿Qué buscas, Alquimista?" onkeyup="if(event.key==='Enter') realizarBusqueda()">
-        <div style="display:flex; gap:15px; flex-wrap:wrap; justify-content:center;">
+        
+        <div style="display:flex; gap:15px; flex-wrap:wrap; justify-content:center; margin-bottom: 35px;">
             <button class="btn btn-v" onclick="ver('tienda')">Tienda</button>
             <button class="btn btn-m" onclick="ver('tablas')">Tablas</button>
             <button class="btn btn-m" onclick="ver('info')">Notas</button>
+        </div>
+
+        <div style="display: flex; gap: 20px; align-items: center; justify-content: center;">
+            <a href="https://wa.me/5492966740488" target="_blank" class="contact-link link-wa">
+                <span>🟢 WhatsApp</span>
+            </a>
+            <a href="https://instagram.com/marveggionicolas/" target="_blank" class="contact-link link-ig">
+                <span>🟣 Instagram</span>
+            </a>
         </div>
     </section>
 
@@ -191,31 +217,31 @@
         <h2 style="color:var(--s)">Tu Pedido</h2>
         <div id="lista-carrito" style="background:#111; padding:20px; border-radius:12px;">Tu Carrito está vacío.</div>
         <div style="text-align:right; font-size:1.5rem; margin-top:20px;">
-            <div style="font-size:0.9rem; color:#888;">Logística: <span style="color:var(--s)">Envío no incluido (A convenir)</span></div>
-            Total: <span id="total-carrito" style="color:var(--p); font-weight: 900; text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);">$0</span>
+            <div style="font-size:0.9rem; color:#888;">Logística: <span style="color:var(--s)">Envío no incluido</span></div>
+            Total: <span id="total-carrito" style="color:var(--p); font-weight: 900;">$0</span>
         </div>
         <button class="btn btn-v" style="width:100%; margin-top:20px" onclick="finalizarPedido()">Enviar pedido por WhatsApp</button>
-        <p style="text-align:center; color:#666; font-size:0.8rem; margin-top:10px;">Al enviar, coordinaremos el método de envío y pago total.</p>
     </section>
 
     <section id="view-gracias" class="seccion" style="text-align: center;">
         <div class="logo-frame" style="border-color: var(--s); display: inline-block;">
-            <h2 style="color: var(--s); margin: 0; letter-spacing: 5px;">¡Gracias por tu compra!</h2>
+            <h2 style="color: var(--s); margin: 0;">¡Gracias Alquimista!</h2>
         </div>
-        <p style="font-size: 1.2rem; margin: 30px 0;">La transmutación de tu jardín ha comenzado, Alquimista.</p>
-        <div style="background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid var(--p); max-width: 500px; margin: 0 auto; text-align: left;">
-            <h3 style="color: var(--p); text-align: center; margin-top: 0;">¿Qué sigue ahora?</h3>
-            <p style="color:#ccc; font-size: 0.9rem;">1. Hemos recibido tu confirmación de compra.<br>2. Procesaremos el envio de tus insumos.<br>3. Te contactaremos para confirmar la entrega.</p>
-        </div>
-        <div style="margin-top: 40px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-            <button class="btn btn-v" onclick="ver('info')">revisar Notas</button>
-            <button class="btn btn-m" onclick="irAlInicio()">Volver al Inicio</button>
-        </div>
+        <p style="margin: 30px 0;">La transmutación de tu jardín ha comenzado.</p>
+        <button class="btn btn-m" onclick="irAlInicio()">Volver al Inicio</button>
     </section>
+
+    <footer id="main-footer">
+        <a href="https://wa.me/5492966740488" target="_blank" class="contact-link link-wa" style="font-size: 0.8rem;">
+            <span>🟢 Consultas WhatsApp</span>
+        </a>
+        <a href="https://instagram.com/marveggionicolas/" target="_blank" class="contact-link link-ig" style="font-size: 0.8rem;">
+            <span>🟣 Instagram</span>
+        </a>
+    </footer>
 
     <script>
         const mp = new MercadoPago('APP_USR-b1a36115-fd8e-4b35-ae27-fc6be6a9d178', { locale: 'es-AR' });
-
         const MI_NUMERO = "5492966740488";
         let carrito = JSON.parse(localStorage.getItem('superm_cart')) || [];
         let productos = [];
@@ -231,12 +257,12 @@
         ];
 
         const notas = {
-            n1: "<h2>🧪 Control de pH y EC</h2><p>El pH determina la disponibilidad de nutrientes. En tierra buscamos 6.2-6.5; en hidro 5.8. La EC mide las sales totales.</p>",
-            n2: "<h2>🔄 Ciclo Infinito</h2><p>Divide tu cultivo en vege y flora para cosechar perpetuamente sin interrupciones.</p>",
-            n3: "<h2>🌿 Nutrición Pro</h2><p>Dominar el balance NPK según la fase del cultivo para maximizar la producción de resina.</p>",
-            n4: "<h2>🌡️ VPD (Déficit de Presión de Vapor)</h2><p>Asegura la transpiración óptima según la relación temperatura/humedad ambiente.</p>",
-            n5: "<h2>🌊 Hidroponía</h2><p>Crecimiento explosivo mediante oxigenación radicular constante en solución nutritiva.</p>",
-            n6: "<h2>🧬 Madres y Clones</h2><p>Técnicas de esquejado y mantenimiento de genéticas estables a largo plazo.</p>"
+            n1: "<h2>🧪 Control pH/EC</h2><p>pH ideal: 6.2-6.5 en suelo. EC según fase: 0.8 a 2.0.</p>",
+            n2: "<h2>🔄 Ciclo Infinito</h2><p>Cosecha perpetua dividiendo áreas de vege y flora.</p>",
+            n3: "<h2>🌿 Nutrición Pro</h2><p>Balance NPK y microelementos quelatados.</p>",
+            n4: "<h2>🌡️ VPD y Clima</h2><p>Relación temperatura y humedad para transpiración óptima.</p>",
+            n5: "<h2>🌊 Hidroponía</h2><p>Crecimiento explosivo en sistemas DWC/RDWC.</p>",
+            n6: "<h2>🧬 Madres y Clones</h2><p>Preservación de genéticas y técnicas de esquejado.</p>"
         };
 
         async function cargarInventario() {
@@ -248,14 +274,9 @@
                 productos = f.filter(x => x.trim() !== "").map(fila => {
                     const c = fila.split(',');
                     return {
-                        id: parseInt(c[0]), 
-                        cat: c[1] ? c[1].trim() : "", 
-                        n: c[2] ? c[2].trim() : "Sin Nombre",
-                        p: parseInt(c[3]) || 0, 
-                        i: c[4] ? c[4].trim() : "🌿", 
-                        desc: c[5] ? c[5].trim() : "",
-                        specs: c[6] ? c[6].split('|') : [],
-                        linkPago: c[7] ? c[7].trim() : ""
+                        id: parseInt(c[0]), cat: c[1] ? c[1].trim() : "", n: c[2] ? c[2].trim() : "Sin Nombre",
+                        p: parseInt(c[3]) || 0, i: c[4] ? c[4].trim() : "🌿", desc: c[5] ? c[5].trim() : "",
+                        specs: c[6] ? c[6].split('|') : [], linkPago: c[7] ? c[7].trim() : ""
                     };
                 });
             } catch (e) { console.error("Error Lab:", e); }
@@ -264,34 +285,23 @@
         window.onload = async () => {
             await cargarInventario();
             updateCartUI();
-            
-            // Lógica para detectar regreso de Mercado Pago (Back URL)
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('status') === 'approved' || urlParams.get('payment_id')) {
+            if (urlParams.get('status') === 'approved') {
                 ver('view-gracias');
-                carrito = [];
-                localStorage.removeItem('superm_cart');
-                updateCartUI();
-            } else if (!sessionStorage.getItem('superm_sesion_activa')) {
-                sessionStorage.setItem('superm_sesion_activa', 'true');
-                irAlInicio(); 
+                carrito = []; localStorage.removeItem('superm_cart'); updateCartUI();
             } else {
                 const seccionActual = localStorage.getItem('superm_seccion');
                 if (seccionActual) ver(seccionActual, false);
             }
         };
 
-        function irAlInicio() {
-            localStorage.removeItem('superm_seccion'); 
-            localStorage.removeItem('superm_prod_id'); 
-            localStorage.removeItem('superm_cat_id');
-            location.href = window.location.pathname; // Recarga limpia sin parámetros
-        }
+        function irAlInicio() { localStorage.removeItem('superm_seccion'); location.href = window.location.pathname; }
 
         function ver(id, guardar = true) {
             if (guardar) localStorage.setItem('superm_seccion', id);
             document.getElementById('landing').style.display = 'none';
             document.getElementById('navbar').style.display = 'flex';
+            document.getElementById('main-footer').style.display = 'flex';
             document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
             const sec = document.getElementById(id);
             if(sec) sec.classList.add('activa');
@@ -317,17 +327,14 @@
 
         function filtrarProductos(catId, nombre) {
             document.getElementById('btn-volver-cat').style.display = 'block';
-            document.getElementById('btn-volver-cat').setAttribute('onclick', 'mostrarCategorias()');
             document.getElementById('titulo-tienda').innerText = nombre;
             document.getElementById('detalle-p').style.display = 'none';
-            document.getElementById('grid-p').style.display = 'grid';
             const fil = productos.filter(p => p.cat === catId);
             renderGrid(fil);
         }
 
         function renderGrid(lista) {
             const grid = document.getElementById('grid-p');
-            if(lista.length === 0) { grid.innerHTML = "<p style='padding:50px; grid-column:1/-1; text-align:center'>Próximamente...</p>"; return; }
             grid.innerHTML = lista.map(p => `
                 <div class="tarjeta" onclick="verProducto(${p.id})">
                     <div class="contenedor-img">${obtenerImagenHTML(p.i)}</div>
@@ -341,203 +348,117 @@
         }
 
         function obtenerImagenHTML(dato) {
-            if (dato.includes("http")) {
-                const links = dato.split('|').map(l => l.trim());
-                return `<img src="${links[0]}" class="img-real">`;
-            }
+            if (dato.includes("http")) return `<img src="${dato.split('|')[0]}" class="img-real">`;
             return `<div class="img-placeholder">${dato}</div>`;
         }
 
         function verProducto(id) {
             const p = productos.find(x => x.id === id);
-            if(!p) return;
             document.getElementById('grid-p').style.display = 'none';
             document.getElementById('detalle-p').style.display = 'block';
             document.getElementById('btn-volver-cat').style.display = 'block';
-            
-            const btnMP = p.linkPago ? `
-                <div style="margin-top:15px;">
-                    <button class="btn btn-mp" style="width:100%;" onclick="window.open('${p.linkPago}', '_blank')">Comprar ahora (Mercado Pago)</button>
-                    <span class="aviso-envio">⚠️ El precio NO incluye envío. Se coordina luego.</span>
-                </div>` : '';
-
             document.getElementById('detalle-p').innerHTML = `
                 <div class="producto-detalle">
                     <div class="contenedor-img" style="height:350px">${obtenerImagenHTML(p.i)}</div>
                     <div class="det-info">
                         <h2>${p.n}</h2>
                         <p>${p.desc}</p>
-                        <div class="det-ficha"><strong>ESPECIFICACIONES:</strong><ul style="margin:10px 0 0 0; color:var(--p);">${p.specs.map(s => `<li>${s}</li>`).join('')}</ul></div>
+                        <div class="det-ficha"><strong>ESPECIFICACIONES:</strong><ul style="color:var(--p);">${p.specs.map(s => `<li>${s}</li>`).join('')}</ul></div>
                         <div class="det-precio">$${p.p.toLocaleString()}</div>
-                        <div style="display:flex; gap:10px; flex-direction:column;">
-                            <div style="display:flex; gap:20px; align-items:center;">
-                                <div class="qty-selector" style="height:40px;">
-                                    <button class="qty-btn" onclick="changeQtyDet(-1)">-</button>
-                                    <input type="number" class="qty-input" id="qty-det" value="1" min="1">
-                                    <button class="qty-btn" onclick="changeQtyDet(1)">+</button>
-                                </div>
-                                <button class="btn btn-v" style="flex:1" onclick="add(${p.id})">Añadir al Pedido</button>
-                            </div>
-                            ${btnMP}
+                        <div style="display:flex; gap:10px;">
+                            <div class="qty-selector"><button class="qty-btn" onclick="changeQtyDet(-1)">-</button><input type="number" class="qty-input" id="qty-det" value="1"><button class="qty-btn" onclick="changeQtyDet(1)">+</button></div>
+                            <button class="btn btn-v" style="flex:1" onclick="add(${p.id})">Añadir</button>
                         </div>
                     </div>
                 </div>`;
-            window.scrollTo(0,0);
         }
 
-        function changeQtyDet(d) { 
-            const input = document.getElementById('qty-det');
-            let v = parseInt(input.value) + d;
-            if(v > 0) input.value = v;
-        }
+        function changeQtyDet(d) { let i = document.getElementById('qty-det'); if(parseInt(i.value)+d > 0) i.value = parseInt(i.value)+d; }
 
         function add(id) {
             const p = productos.find(x => x.id === id);
-            const inputQty = document.getElementById('qty-det');
-            const q = parseInt(inputQty.value) || 1;
-            
+            const q = parseInt(document.getElementById('qty-det').value) || 1;
             const ex = carrito.find(i => i.id === id);
             if(ex) ex.q += q; else carrito.push({id: p.id, n: p.n, p: p.p, q: q});
-            
-            gtag('event', 'add_to_cart', { 'item_name': p.n, 'price': p.p, 'quantity': q });
             localStorage.setItem('superm_cart', JSON.stringify(carrito));
-            updateCartUI(); 
-            notify(`Añadido: ${q}x ${p.n}`);
+            updateCartUI(); notify(`Añadido: ${p.n}`);
         }
 
-        function updateCartUI() { 
-            document.getElementById('cart-count').innerText = carrito.reduce((a, b) => a + b.q, 0); 
-        }
+        function updateCartUI() { document.getElementById('cart-count').innerText = carrito.reduce((a, b) => a + b.q, 0); }
 
         function renderCarrito() {
             const lista = document.getElementById('lista-carrito');
             let total = 0;
-            if(!carrito.length) { 
-                lista.innerHTML = "<p style='text-align:center; color:#666;'>Tu Carrito está vacío.</p>"; 
-                document.getElementById('total-carrito').innerText = "$0"; 
-                return; 
-            }
-            
+            if(!carrito.length) { lista.innerHTML = "Carrito vacío."; document.getElementById('total-carrito').innerText = "$0"; return; }
             lista.innerHTML = carrito.map((it, idx) => {
-                const subtotalItem = it.p * it.q;
-                total += subtotalItem;
-                return `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #222; padding-bottom:10px;">
-                    <div style="flex:1;">
-                        <div style="font-weight:bold; color:var(--p);">${it.n}</div>
-                        <div style="font-size:0.8rem; color:#888;">$${it.p.toLocaleString()} c/u</div>
-                    </div>
-                    
+                const sub = it.p * it.q;
+                total += sub;
+                return `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #222; padding-bottom:10px;">
+                    <div><b>${it.n}</b><br><small>$${it.p.toLocaleString()}</small></div>
                     <div style="display:flex; align-items:center; gap:10px;">
                         <div class="qty-selector">
                             <button class="qty-btn" onclick="ajustarCarrito(${idx}, -1)">-</button>
                             <div class="qty-val">${it.q}</div>
                             <button class="qty-btn" onclick="ajustarCarrito(${idx}, 1)">+</button>
                         </div>
-                        <div style="min-width:80px; text-align:right; font-weight:bold; color:var(--txt);">
-                            $${subtotalItem.toLocaleString()}
-                        </div>
-                        <button onclick="quitar(${idx})" style="background:none; border:none; color:#ff4444; cursor:pointer; font-size:1.2rem; margin-left:10px;">&times;</button>
+                        <button onclick="quitar(${idx})" style="color:red; background:none; border:none; cursor:pointer; font-size:1.2rem;">&times;</button>
                     </div>
                 </div>`;
             }).join('');
-            
             document.getElementById('total-carrito').innerText = "$" + total.toLocaleString();
         }
 
         function ajustarCarrito(idx, cambio) {
             carrito[idx].q += cambio;
-            if (carrito[idx].q < 1) {
-                if(confirm(`¿Deseas eliminar "${carrito[idx].n}" del pedido?`)) {
-                    carrito.splice(idx, 1);
-                } else {
-                    carrito[idx].q = 1;
-                }
-            }
+            if (carrito[idx].q < 1) carrito.splice(idx, 1);
             localStorage.setItem('superm_cart', JSON.stringify(carrito));
-            renderCarrito();
-            updateCartUI();
+            renderCarrito(); updateCartUI();
         }
 
-        function quitar(idx) { 
-            if(confirm("¿Eliminar este producto?")) {
-                carrito.splice(idx,1); 
-                localStorage.setItem('superm_cart', JSON.stringify(carrito)); 
-                renderCarrito(); 
-                updateCartUI();
-            }
-        }
+        function quitar(idx) { carrito.splice(idx,1); localStorage.setItem('superm_cart', JSON.stringify(carrito)); renderCarrito(); updateCartUI(); }
 
         function finalizarPedido() {
-            if(!carrito.length) return;
-            gtag('event', 'purchase_click', { 'value': document.getElementById('total-carrito').innerText });
-            let msg = "Hola Super M! Pedido de Laboratorio:%0A" + carrito.map(i => `- ${i.q}x ${i.n}`).join("%0A") + "%0A%0A*Logística: Envío a convenir*";
+            let msg = "Hola Super M! Pedido:%0A" + carrito.map(i => `- ${i.q}x ${i.n}`).join("%0A");
             window.open(`https://wa.me/${MI_NUMERO}?text=${msg}`);
-            
-            // Limpieza y redirección manual post-whatsapp
-            carrito = [];
-            localStorage.removeItem('superm_cart');
-            updateCartUI();
-            ver('view-gracias');
+            carrito = []; localStorage.removeItem('superm_cart'); updateCartUI(); ver('view-gracias');
         }
 
         function realizarBusqueda() {
             const q = document.getElementById('mainSearch').value.toLowerCase();
-            if(!q) return;
             ver('tienda');
-            const fil = productos.filter(p => p.n.toLowerCase().includes(q));
-            renderGrid(fil);
+            renderGrid(productos.filter(p => p.n.toLowerCase().includes(q)));
         }
 
         function cargarTablasPersistentes() {
             const guardado = JSON.parse(localStorage.getItem('superm_tablas')) || [];
-            const tbody = document.getElementById('cuerpo-tabla');
-            tbody.innerHTML = "";
-            if(guardado.length === 0) { for(let i=0; i<4; i++) nuevaFila(); } 
-            else { guardado.forEach(filaData => nuevaFila(filaData)); }
+            document.getElementById('cuerpo-tabla').innerHTML = "";
+            if(guardado.length === 0) for(let i=0; i<4; i++) nuevaFila();
+            else guardado.forEach(f => nuevaFila(f));
         }
 
         function nuevaFila(datos = ["", "", "", "", "", "", ""]) {
-            const tbody = document.getElementById('cuerpo-tabla');
-            const index = tbody.children.length + 1;
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td style="color:var(--s); text-align:center; font-weight:bold">S${index}</td>` + 
-                datos.map(val => `<td><input class="input-tabla" value="${val}" oninput="guardarTablas()"></td>`).join('');
-            tbody.appendChild(tr);
-            guardarTablas();
+            tr.innerHTML = `<td style="color:var(--s); text-align:center;">S${document.getElementById('cuerpo-tabla').children.length+1}</td>` + 
+                datos.map(v => `<td><input class="input-tabla" value="${v}" oninput="guardarTablas()"></td>`).join('');
+            document.getElementById('cuerpo-tabla').appendChild(tr);
         }
 
         function guardarTablas() {
-            const filas = Array.from(document.querySelectorAll('#cuerpo-tabla tr'));
-            const dataTotal = filas.map(tr => Array.from(tr.querySelectorAll('input')).map(i => i.value));
-            localStorage.setItem('superm_tablas', JSON.stringify(dataTotal));
+            const data = Array.from(document.querySelectorAll('#cuerpo-tabla tr')).map(tr => Array.from(tr.querySelectorAll('input')).map(i => i.value));
+            localStorage.setItem('superm_tablas', JSON.stringify(data));
         }
 
-        function borrarTablas() { if(confirm("¿Limpiar todos los datos?")) { localStorage.removeItem('superm_tablas'); cargarTablasPersistentes(); } }
+        function borrarTablas() { if(confirm("¿Resetear?")) { localStorage.removeItem('superm_tablas'); cargarTablasPersistentes(); } }
 
         function descargarImagen() {
             html2canvas(document.getElementById('area-descarga'), {backgroundColor:"#0a0a0a"}).then(c => {
-                const l = document.createElement('a'); l.download = 'SuperM_Lab.png';
-                l.href = c.toDataURL(); l.click();
+                const l = document.createElement('a'); l.download = 'SuperM_Lab.png'; l.href = c.toDataURL(); l.click();
             });
         }
 
-        function verNota(id) {
-            document.getElementById('menu-notas').style.display = 'none';
-            document.getElementById('visor-notas').style.display = 'block';
-            document.getElementById('contenido-nota').innerHTML = notas[id];
-        }
-
-        function cerrarNota() {
-            document.getElementById('visor-notas').style.display = 'none';
-            document.getElementById('menu-notas').style.display = 'grid';
-        }
-
-        function notify(m) {
-            const n = document.getElementById('notificacion');
-            n.innerText = m; n.style.display = 'block';
-            setTimeout(() => n.style.display = 'none', 2500);
-        }
+        function verNota(id) { document.getElementById('menu-notas').style.display='none'; document.getElementById('visor-notas').style.display='block'; document.getElementById('contenido-nota').innerHTML=notas[id]; }
+        function cerrarNota() { document.getElementById('visor-notas').style.display='none'; document.getElementById('menu-notas').style.display='grid'; }
+        function notify(m) { const n = document.getElementById('notificacion'); n.innerText = m; n.style.display = 'block'; setTimeout(() => n.style.display = 'none', 2000); }
     </script>
 </body>
 </html>
