@@ -223,9 +223,10 @@
     <section id="tablas" class="seccion">
         <div style="text-align: center; margin-bottom: 30px;">
             <h2 id="titulo-lab" style="color:var(--p); margin-bottom: 20px;">LABORATORIO ALQUIMISTA</h2>
-            <div style="display: flex; gap: 10px; justify-content: center;">
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                 <button class="btn btn-m" id="btn-nav-seg" onclick="verSubSeccionLab('seguimiento')">Seguimiento</button>
                 <button class="btn btn-m" id="btn-nav-calc" onclick="verSubSeccionLab('calculadora')">Calculadora</button>
+                <button class="btn btn-m" id="btn-nav-rec" onclick="verSubSeccionLab('recetarios')">Recetarios</button>
             </div>
         </div>
 
@@ -249,6 +250,74 @@
                 <p style="text-align: center; color: #888;">Herramienta para el cálculo de nutrientes y parámetros ambientales.</p>
                 <div class="lab-data-box">
                     <p style="text-align: center;">[ Espacio reservado para la configuración de la calculadora ]</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="lab-recetarios" style="display: none;">
+            <div class="grid" id="grid-recetarios">
+                
+                <div class="tarjeta" style="border-color: #ffcc00;">
+                    <div class="contenedor-img"><div class="img-placeholder">🧪</div></div>
+                    <h3 style="color: #ffcc00; text-align: center; margin-bottom: 0;">NAMASTÉ</h3>
+                    <p style="font-size: 0.8rem; text-align: center; color: #888;">Línea Orgánica Nacional</p>
+                    <button class="btn btn-v" style="width: 100%; margin-top: 10px;" onclick="window.open('URL_NAMASTE', '_blank')">📥 Descargar Tabla</button>
+                </div>
+                
+                <div class="tarjeta" style="border-color: var(--p);">
+                    <div class="contenedor-img"><div class="img-placeholder">🌿</div></div>
+                    <h3 style="color: var(--p); text-align: center; margin-bottom: 0;">TOP CROP</h3>
+                    <p style="font-size: 0.8rem; text-align: center; color: #888;">Fertilizantes de España</p>
+                    <button class="btn btn-v" style="width: 100%; margin-top: 10px;" onclick="window.open('URL_TOPCROP', '_blank')">📥 Descargar Tabla</button>
+                </div>
+
+                <div class="tarjeta" style="border-color: #00d2ff;">
+                    <div class="contenedor-img"><div class="img-placeholder">🧬</div></div>
+                    <h3 style="color: #00d2ff; text-align: center; margin-bottom: 0;">ADVANCED</h3>
+                    <p style="font-size: 0.8rem; text-align: center; color: #888;">Tecnología pH Perfect</p>
+                    <button class="btn btn-v" style="width: 100%; margin-top: 10px;" onclick="window.open('URL_ADVANCED', '_blank')">📥 Descargar Tabla</button>
+                </div>
+
+                <div class="tarjeta" style="border-color: #e67e22;">
+                    <div class="contenedor-img"><div class="img-placeholder">🏺</div></div>
+                    <h3 style="color: #e67e22; text-align: center; margin-bottom: 0;">AZTEKA</h3>
+                    <p style="font-size: 0.8rem; text-align: center; color: #888;">Nutrición Orgánica</p>
+                    <button class="btn btn-v" style="width: 100%; margin-top: 10px;" onclick="window.open('URL_AZTEKA', '_blank')">📥 Descargar Tabla</button>
+                </div>
+
+                <div class="tarjeta" style="border-color: #27ae60;">
+                    <div class="contenedor-img"><div class="img-placeholder">🍃</div></div>
+                    <h3 style="color: #27ae60; text-align: center; margin-bottom: 0;">BIO BIZZ</h3>
+                    <p style="font-size: 0.8rem; text-align: center; color: #888;">Certificación Orgánica</p>
+                    <button class="btn btn-v" style="width: 100%; margin-top: 10px;" onclick="window.open('URL_BIOBIZZ', '_blank')">📥 Descargar Tabla</button>
+                </div>
+
+                <div class="tarjeta" style="border-color: #c0392b;">
+                    <div class="contenedor-img"><div class="img-placeholder">💥</div></div>
+                    <h3 style="color: #c0392b; text-align: center; margin-bottom: 0;">GROTEK</h3>
+                    <p style="font-size: 0.8rem; text-align: center; color: #888;">Potencia Mineral</p>
+                    <button class="btn btn-v" style="width: 100%; margin-top: 10px;" onclick="window.open('URL_GROTEK', '_blank')">📥 Descargar Tabla</button>
+                </div>
+
+                <div class="tarjeta" style="border-color: #9b59b6;">
+                    <div class="contenedor-img"><div class="img-placeholder">🌀</div></div>
+                    <h3 style="color: #9b59b6; text-align: center; margin-bottom: 0;">HOLISTIC</h3>
+                    <p style="font-size: 0.8rem; text-align: center; color: #888;">Bio-estimulantes</p>
+                    <button class="btn btn-v" style="width: 100%; margin-top: 10px;" onclick="window.open('URL_HOLISTIC', '_blank')">📥 Descargar Tabla</button>
+                </div>
+
+                <div class="tarjeta" style="border-color: #f1c40f;">
+                    <div class="contenedor-img"><div class="img-placeholder">☀️</div></div>
+                    <h3 style="color: #f1c40f; text-align: center; margin-bottom: 0;">EDEN</h3>
+                    <p style="font-size: 0.8rem; text-align: center; color: #888;">Línea de Alto Rendimiento</p>
+                    <button class="btn btn-v" style="width: 100%; margin-top: 10px;" onclick="window.open('URL_EDEN', '_blank')">📥 Descargar Tabla</button>
+                </div>
+
+                <div class="tarjeta" style="border-color: #ffffff;">
+                    <div class="contenedor-img"><div class="img-placeholder">⚡</div></div>
+                    <h3 style="color: #ffffff; text-align: center; margin-bottom: 0;">FEEDING</h3>
+                    <p style="font-size: 0.8rem; text-align: center; color: #888;">Green House Nutrients</p>
+                    <button class="btn btn-v" style="width: 100%; margin-top: 10px;" onclick="window.open('URL_FEEDING', '_blank')">📥 Descargar Tabla</button>
                 </div>
             </div>
         </div>
@@ -493,18 +562,19 @@
         function verSubSeccionLab(sub) {
             document.getElementById('lab-seguimiento').style.display = (sub === 'seguimiento') ? 'block' : 'none';
             document.getElementById('lab-calculadora').style.display = (sub === 'calculadora') ? 'block' : 'none';
+            document.getElementById('lab-recetarios').style.display = (sub === 'recetarios') ? 'block' : 'none';
             
-            // Estilos de botones
-            const btnS = document.getElementById('btn-nav-seg');
-            const btnC = document.getElementById('btn-nav-calc');
+            const idsBotones = ['btn-nav-seg', 'btn-nav-calc', 'btn-nav-rec'];
+            const mapeo = { 'seguimiento': 'btn-nav-seg', 'calculadora': 'btn-nav-calc', 'recetarios': 'btn-nav-rec' };
             
-            if(sub === 'seguimiento') {
-                btnS.style.background = 'var(--p)'; btnS.style.color = '#000';
-                btnC.style.background = 'transparent'; btnC.style.color = 'var(--s)';
-            } else {
-                btnC.style.background = 'var(--p)'; btnC.style.color = '#000';
-                btnS.style.background = 'transparent'; btnS.style.color = 'var(--s)';
-            }
+            idsBotones.forEach(id => {
+                const btn = document.getElementById(id);
+                if (id === mapeo[sub]) {
+                    btn.style.background = 'var(--p)'; btn.style.color = '#000';
+                } else {
+                    btn.style.background = 'transparent'; btn.style.color = 'var(--s)';
+                }
+            });
         }
 
         function verNota(id) {
