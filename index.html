@@ -68,6 +68,7 @@
             display: none; background: rgba(0,0,0,0.95); padding: 15px 5%; justify-content: space-between;
             align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222; backdrop-filter: blur(10px);
         }
+        .nav-links { display: flex; align-items: center; }
         .nav-links span { cursor: pointer; margin-left: 20px; transition: 0.3s; font-weight: bold; }
         .nav-links span:hover { color: var(--p); }
 
@@ -131,10 +132,26 @@
         .det-precio { font-size: 2rem; color: var(--s); font-weight: bold; margin: 20px 0; }
         .det-ficha { background: #000; padding: 20px; border-radius: 10px; border-left: 4px solid var(--p); margin: 20px 0; }
         
-        .qty-selector { display: flex; align-items: center; background: #000; border: 1px solid #333; border-radius: 8px; height: 35px; overflow: hidden; width: fit-content; }
-        .qty-btn { background: transparent; color: var(--p); border: none; width: 30px; height: 100%; cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
-        .qty-btn:hover { background: #111; }
-        .qty-input { width: 50px; height: 100%; background: transparent; color: #fff; border: none; border-left: 1px solid #222; border-right: 1px solid #222; text-align: center; font-weight: bold; font-family: inherit; font-size: 1rem; outline: none; }
+        /* BOTONES DE CANTIDAD ESTILO ALQUIMISTA */
+        .qty-selector { 
+            display: flex; align-items: center; background: #000; 
+            border: 1px solid var(--p); border-radius: 8px; 
+            height: 40px; overflow: hidden; width: fit-content;
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.1);
+        }
+        .qty-btn { 
+            background: transparent; color: var(--p); border: none; 
+            width: 35px; height: 100%; cursor: pointer; font-size: 1.2rem; 
+            transition: 0.2s; font-weight: 900;
+        }
+        .qty-btn:hover { background: var(--p); color: #000; }
+        .qty-input { 
+            width: 50px; height: 100%; background: transparent; color: #fff; 
+            border: none; border-left: 1px solid #222; border-right: 1px solid #222; 
+            text-align: center; font-weight: bold; font-family: inherit; font-size: 1.1rem; 
+            outline: none; -moz-appearance: textfield;
+        }
+        .qty-input::-webkit-outer-spin-button, .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
         .contenedor-tabla { overflow-x: auto; background: #050505; padding: 20px; border-radius: 12px; border: 1px solid var(--p); }
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
@@ -243,18 +260,53 @@
         </div>
 
         <div id="lab-calculadora" style="display: none;">
-            <div class="nota-contenido-wrapper" style="border-color: var(--p);">
-                <h3 style="color: var(--p); text-align: center;">CALCULADORA TÉCNICA</h3>
-                <p style="text-align: center; color: #888;">Herramienta para el cálculo de nutrientes y parámetros ambientales.</p>
-                <div class="lab-data-box">
-                    <p style="text-align: center;">[ Espacio reservado para la configuración de la calculadora ]</p>
+            <div class="nota-contenido-wrapper" style="border-color: var(--p); max-width: 600px;">
+                <h3 style="color: var(--p); text-align: center; margin-top:0;">CENTRO DE CÁLCULO</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px;">
+                    <button class="btn btn-m" style="font-size: 0.7rem; padding: 5px;" onclick="verCalc('c-ferti')">🧪 Dosis</button>
+                    <button class="btn btn-m" style="font-size: 0.7rem; padding: 5px;" onclick="verCalc('c-luz')">⚡ Consumo</button>
+                    <button class="btn btn-m" style="font-size: 0.7rem; padding: 5px;" onclick="verCalc('c-sustrato')">📦 Sustrato</button>
+                    <button class="btn btn-m" style="font-size: 0.7rem; padding: 5px;" onclick="verCalc('c-vpd')">🌡️ VPD</button>
+                </div>
+
+                <div id="c-ferti" class="calc-panel">
+                    <h4 style="color:var(--p)">Dosis de Nutrientes</h4>
+                    <input type="number" id="f-litros" class="input-tabla" placeholder="Litros de agua" style="margin-bottom:10px; background:#000;">
+                    <input type="number" id="f-dosis" class="input-tabla" placeholder="Dosis (ml/L)" style="margin-bottom:10px; background:#000;">
+                    <button class="btn btn-v" style="width:100%" onclick="calcFerti()">Calcular Mezcla</button>
+                    <div id="res-ferti" class="lab-data-box" style="display:none"></div>
+                </div>
+
+                <div id="c-luz" class="calc-panel" style="display:none">
+                    <h4 style="color:var(--p)">Costo Eléctrico (Mensual)</h4>
+                    <input type="number" id="l-watts" class="input-tabla" placeholder="Watts totales" style="margin-bottom:10px; background:#000;">
+                    <input type="number" id="l-horas" class="input-tabla" placeholder="Horas diarias (ej: 18)" style="margin-bottom:10px; background:#000;">
+                    <input type="number" id="l-precio" class="input-tabla" placeholder="Precio kWh (ver factura)" style="margin-bottom:10px; background:#000;">
+                    <button class="btn btn-v" style="width:100%" onclick="calcLuz()">Calcular Costo</button>
+                    <div id="res-luz" class="lab-data-box" style="display:none"></div>
+                </div>
+
+                <div id="c-sustrato" class="calc-panel" style="display:none">
+                    <h4 style="color:var(--p)">Litros de Sustrato</h4>
+                    <input type="number" id="s-capacidad" class="input-tabla" placeholder="Litros de la maceta" style="margin-bottom:10px; background:#000;">
+                    <input type="number" id="s-cantidad" class="input-tabla" placeholder="Cantidad de macetas" style="margin-bottom:10px; background:#000;">
+                    <button class="btn btn-v" style="width:100%" onclick="calcSustrato()">Calcular Total</button>
+                    <div id="res-sustrato" class="lab-data-box" style="display:none"></div>
+                </div>
+
+                <div id="c-vpd" class="calc-panel" style="display:none">
+                    <h4 style="color:var(--p)">Déficit de Presión (VPD)</h4>
+                    <input type="number" id="v-temp" class="input-tabla" placeholder="Temperatura °C" style="margin-bottom:10px; background:#000;">
+                    <input type="number" id="v-hum" class="input-tabla" placeholder="Humedad %" style="margin-bottom:10px; background:#000;">
+                    <button class="btn btn-v" style="width:100%" onclick="calcVPD()">Analizar Clima</button>
+                    <div id="res-vpd" class="lab-data-box" style="display:none"></div>
                 </div>
             </div>
         </div>
 
         <div id="lab-recetarios" style="display: none;">
-            <div class="grid" id="grid-recetarios">
-                </div>
+            <div class="grid" id="grid-recetarios"></div>
         </div>
     </section>
 
@@ -283,7 +335,7 @@
             <div class="tarjeta nota-card" onclick="verNota('n4')">
                 <div class="nota-icon">🌊</div>
                 <h3>Hidroponía DWC</h3>
-                <p>Crecimiento en alta velocidad.</p>
+                <p>Raíces suspendidas en agua oxigenada...</p>
             </div>
             <div class="tarjeta nota-card" onclick="verNota('n5')">
                 <div class="nota-icon">🧬</div>
@@ -362,13 +414,12 @@
         const MI_NUMERO = "5492966740488";
         const URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbze4x6TEPBeNJKeQ-xmlqbfilmLd6B62gLPD1aYqp6DsZiGFkX8L6hMIS5RyKiXOWlO/exec";
         
-        // --- CONFIGURACIÓN DE HOJAS ---
         const URL_SHEET_INVENTARIO = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQz-fNndUCID7stvplq5hmb2gLdSLs68uks2dfAr3DJK1Ft9LUtF0tYRyET3HEHotB-eKAqxishKe_A/pub?output=csv";
         const URL_SHEET_RECETARIOS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQz-fNndUCID7stvplq5hmb2gLdSLs68uks2dfAr3DJK1Ft9LUtF0tYRyET3HEHotB-eKAqxishKe_A/pub?gid=654571090&single=true&output=csv";
 
         let carrito = JSON.parse(localStorage.getItem('superm_cart')) || [];
         let productos = [];
-        let recetarios = []; // Nueva lista para marcas
+        let recetarios = []; 
         let contextoEnvio = null;
 
         const categorias = [
@@ -390,7 +441,6 @@
             n6: `<h2 style="color:var(--p)">🌿 Nutrición NPK</h2><p>Nitrógeno (N), Fósforo (P) y Potasio (K)...</p>`
         };
 
-        // --- CARGA DE DATOS ---
         async function cargarInventario() {
             try {
                 const r = await fetch(URL_SHEET_INVENTARIO);
@@ -430,16 +480,20 @@
                     <div class="contenedor-img">
                         <img src="${r.imagen}" class="img-real" onerror="this.src='https://placehold.co/400x400?text=${r.marca}'">
                     </div>
-                    <h3 style="color: var(--p); text-align: center; margin-bottom: 0;">${r.marca}</h3>
-                    <p style="font-size: 0.8rem; text-align: center; color: #888;">${r.desc}</p>
-                    <button class="btn btn-v" style="width: 100%; margin-top: 10px;" onclick="window.open('${r.link}', '_blank')">📥 Descargar Tabla</button>
+                    <div style="padding:15px; text-align:center;">
+                        <h3 style="color: var(--p); margin-bottom: 5px;">${r.marca}</h3>
+                        <p style="font-size: 0.8rem; color: #888; margin-bottom: 15px;">${r.desc}</p>
+                        <button class="btn btn-v" style="width: 100%;" onclick="descargarTablaDirecta('${r.link}', '${r.marca}')">
+                            📥 Descargar Tabla
+                        </button>
+                    </div>
                 </div>
             `).join('');
         }
 
         window.onload = async () => {
             await cargarInventario();
-            await cargarRecetarios(); // CARGA DINÁMICA DE LA HOJA 3
+            await cargarRecetarios(); 
             updateCartUI();
             const urlParams = new URLSearchParams(window.location.search);
             const status = urlParams.get('status');
@@ -455,7 +509,6 @@
             }
         };
 
-        // --- FUNCIONES DE NAVEGACIÓN Y TIENDA ---
         function irAlInicio() { localStorage.removeItem('superm_seccion'); location.href = window.location.pathname; }
 
         function ver(id, guardar = true) {
@@ -506,7 +559,7 @@
 
         function cerrarNota() {
             document.getElementById('visor-notas').style.display = 'none';
-            document.getElementById('menu-notas').style.display = 'grid';
+            document.getElementById('menu-notas').style.gridDisplay = 'grid';
         }
 
         function mostrarCategorias() {
@@ -567,7 +620,7 @@
                             <div style="display:flex; gap:20px;">
                                 <div class="qty-selector">
                                     <button class="qty-btn" onclick="changeQtyDet(-1)">-</button>
-                                    <input type="number" class="qty-input" id="qty-det" value="1">
+                                    <input type="number" class="qty-input" id="qty-det" value="1" min="1">
                                     <button class="qty-btn" onclick="changeQtyDet(1)">+</button>
                                 </div>
                                 <button class="btn btn-v" style="flex:1" onclick="add(${p.id})">Añadir al Carrito</button>
@@ -579,7 +632,11 @@
                 </div>`;
         }
 
-        function changeQtyDet(d) { let i = document.getElementById('qty-det'); if(parseInt(i.value)+d > 0) i.value = parseInt(i.value)+d; }
+        function changeQtyDet(d) { 
+            let i = document.getElementById('qty-det'); 
+            let val = parseInt(i.value) || 1;
+            if(val + d > 0) i.value = val + d; 
+        }
 
         function add(id) {
             const p = productos.find(x => x.id === id);
@@ -610,7 +667,7 @@
                     <div style="display:flex; align-items:center; gap:10px;">
                         <div class="qty-selector">
                             <button class="qty-btn" onclick="ajustarCarrito(${idx}, -1)">-</button>
-                            <div class="qty-val">${it.q}</div>
+                            <input type="number" class="qty-input" value="${it.q}" onchange="inputCarrito(${idx}, this.value)">
                             <button class="qty-btn" onclick="ajustarCarrito(${idx}, 1)">+</button>
                         </div>
                         <button onclick="quitar(${idx})" style="color:red; background:none; border:none; cursor:pointer; font-size:1.2rem;">&times;</button>
@@ -623,6 +680,17 @@
         function ajustarCarrito(idx, cambio) {
             carrito[idx].q += cambio;
             if (carrito[idx].q < 1) carrito.splice(idx, 1);
+            localStorage.setItem('superm_cart', JSON.stringify(carrito));
+            renderCarrito(); updateCartUI();
+        }
+
+        function inputCarrito(idx, valor) {
+            let n = parseInt(valor);
+            if(isNaN(n) || n < 1) {
+                carrito.splice(idx, 1);
+            } else {
+                carrito[idx].q = n;
+            }
             localStorage.setItem('superm_cart', JSON.stringify(carrito));
             renderCarrito(); updateCartUI();
         }
@@ -703,7 +771,6 @@
             renderGrid(productos.filter(p => p.n.toLowerCase().includes(q)));
         }
 
-        // --- TABLAS ---
         function cargarTablasPersistentes() {
             const guardado = JSON.parse(localStorage.getItem('superm_tablas')) || [];
             document.getElementById('cuerpo-tabla').innerHTML = "";
@@ -736,6 +803,77 @@
                 link.href = canvas.toDataURL();
                 link.click();
             });
+        }
+
+        async function descargarTablaDirecta(url, nombreMarca) {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const urlBlob = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = urlBlob;
+                a.download = `Tabla_Cultivo_${nombreMarca}_SuperM.jpg`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(urlBlob);
+                notify("Descargando Tabla de " + nombreMarca);
+            } catch (e) {
+                console.error("Error en descarga directa, abriendo link...");
+                window.open(url, '_blank');
+            }
+        }
+
+        // --- LÓGICA DE CALCULADORAS SUPER M ---
+        function verCalc(id) {
+            document.querySelectorAll('.calc-panel').forEach(p => p.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function calcFerti() {
+            const l = parseFloat(document.getElementById('f-litros').value);
+            const d = parseFloat(document.getElementById('f-dosis').value);
+            if(l && d) {
+                const res = document.getElementById('res-ferti');
+                res.style.display = 'block';
+                res.innerHTML = `<h4>RESULTADO:</h4><p>Debes aplicar <span class="val-v">${(l * d).toFixed(1)} ml</span> de producto en tus ${l}L de agua.</p>`;
+            }
+        }
+
+        function calcLuz() {
+            const w = parseFloat(document.getElementById('l-watts').value);
+            const h = parseFloat(document.getElementById('l-horas').value);
+            const p = parseFloat(document.getElementById('l-precio').value) || 0;
+            if(w && h) {
+                const mensualKwh = (w * h * 30) / 1000;
+                const costo = mensualKwh * p;
+                const res = document.getElementById('res-luz');
+                res.style.display = 'block';
+                res.innerHTML = `<h4>CONSUMO:</h4><p>Gasto mensual: <span class="val-v">${mensualKwh.toFixed(1)} kWh</span><br>Costo est.: <span class="val-v">$${costo.toFixed(2)}</span></p>`;
+            }
+        }
+
+        function calcSustrato() {
+            const l = parseFloat(document.getElementById('s-capacidad').value);
+            const c = parseFloat(document.getElementById('s-cantidad').value);
+            if(l && c) {
+                const res = document.getElementById('res-sustrato');
+                res.style.display = 'block';
+                res.innerHTML = `<h4>NECESITAS:</h4><p><span class="val-v">${l * c} Litros</span> de sustrato en total para tus ${c} macetas.</p>`;
+            }
+        }
+
+        function calcVPD() {
+            const t = parseFloat(document.getElementById('v-temp').value);
+            const h = parseFloat(document.getElementById('v-hum').value);
+            if(t && h) {
+                const svp = 0.61078 * Math.exp((17.27 * t) / (t + 237.3));
+                const vpd = svp * (1 - (h / 100));
+                let estado = vpd < 0.8 ? "Bajo (Poca transpiración)" : (vpd > 1.2 ? "Alto (Estrés hídrico)" : "IDEAL");
+                const res = document.getElementById('res-vpd');
+                res.style.display = 'block';
+                res.innerHTML = `<h4>ESTADO: <span class="val-v">${vpd.toFixed(2)} kPa</span></h4><p>Rango: <b>${estado}</b></p>`;
+            }
         }
     </script>
 </body>
